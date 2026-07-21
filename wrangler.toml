@@ -14,7 +14,7 @@ binding = "AI"
 
 # Variáveis não secretas
 [vars]
-PRECO = "47"
+PRECO = "19.90"
 LLM_PROVIDER = "workers-ai"                              # "workers-ai" ou "external"
 LLM_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"   # modelo aberto na Cloudflare
 

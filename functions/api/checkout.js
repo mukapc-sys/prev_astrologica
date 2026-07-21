@@ -2,7 +2,7 @@ import { json, onRequestOptions } from "./_shared.js";
 export { onRequestOptions };
 
 // POST /api/checkout  { lead_id, email, nome }
-// Cria um pagamento PIX (checkout transparente) no Mercado Pago
+// Cria um pagamento PIX (checkout transparente) no Mercado Pago 
 export async function onRequestPost({ request, env }) {
   try {
     const b = await request.json();

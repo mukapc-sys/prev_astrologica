@@ -34,7 +34,7 @@
       radial-gradient(38% 28% at 80% 16%, rgba(196,120,214,.30), transparent 70%),
       radial-gradient(44% 32% at 14% 84%, rgba(122,92,214,.32), transparent 70%),
       radial-gradient(30% 22% at 58% 62%, rgba(150,110,232,.16), transparent 70%);
-    filter:blur(34px); animation:drift2 220s linear infinite; opacity:.95;}
+    filter:blur(34px); animation:drift2 220s linear infinite, nebPulse 16s ease-in-out infinite; opacity:.95;}
   .ceu::before{content:"";position:absolute;inset:-50%;background-repeat:repeat;
     background-image:
       radial-gradient(1.5px 1.5px at 20% 30%, #ffffffcc 40%, transparent),
@@ -49,7 +49,31 @@
     animation:drift 180s linear infinite; opacity:.8;}
   @keyframes drift{to{transform:translate(-140px,-90px)}}
   @keyframes drift2{to{transform:translate(64px,-42px)}}
-  @media (prefers-reduced-motion:reduce){.ceu::before,.ceu::after{animation:none}}
+  @keyframes nebPulse{0%,100%{opacity:.7}50%{opacity:1}}
+  /* estrelas que cintilam */
+  .twinkle{position:absolute;inset:-40%;pointer-events:none;background-repeat:repeat;
+    background-image:
+      radial-gradient(1.7px 1.7px at 25% 20%, #fff 45%, transparent),
+      radial-gradient(1.5px 1.5px at 66% 44%, var(--ouro) 45%, transparent),
+      radial-gradient(1.4px 1.4px at 45% 72%, #fff 45%, transparent),
+      radial-gradient(1.6px 1.6px at 83% 78%, #fff 45%, transparent),
+      radial-gradient(1.4px 1.4px at 12% 60%, var(--ouro) 45%, transparent);
+    background-size:300px 300px,360px 360px,420px 420px,280px 280px,340px 340px;
+    animation:twinkle 4.2s ease-in-out infinite, drift 240s linear infinite reverse;opacity:.9}
+  @keyframes twinkle{0%,100%{opacity:.3}50%{opacity:1}}
+  /* estrela cadente ocasional */
+  .shoot{position:absolute;top:10%;left:-12%;width:150px;height:2px;pointer-events:none;
+    background:linear-gradient(90deg,transparent,#fff,var(--ouro));border-radius:2px;
+    filter:drop-shadow(0 0 6px rgba(243,214,138,.7));opacity:0;transform:rotate(20deg);
+    animation:shoot 11s ease-in infinite}
+  @keyframes shoot{0%,90%{opacity:0;transform:translate(0,0) rotate(20deg)}
+    92%{opacity:1}100%{opacity:0;transform:translate(120vw,42vh) rotate(20deg)}}
+  @keyframes pulseOp{0%,100%{opacity:.5}50%{opacity:1}}
+  @keyframes emGlow{0%,100%{text-shadow:0 0 22px rgba(243,214,138,.35)}50%{text-shadow:0 0 42px rgba(243,214,138,.72)}}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+  @media (prefers-reduced-motion:reduce){
+    .ceu::before,.ceu::after,.twinkle,.shoot,#wheel,.wheel-core,.wheel-star,h1 em,#desbloquear{animation:none}
+  }
 
   .app{position:relative; z-index:1; max-width:480px; margin:0 auto; min-height:100dvh;
     padding:calc(env(safe-area-inset-top) + 22px) 22px calc(env(safe-area-inset-bottom) + 40px);}
@@ -60,7 +84,7 @@
   .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.32em; text-transform:uppercase; color:var(--ouro); display:flex; align-items:center; gap:10px}
   .eyebrow::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--linha),transparent)}
   h1{font-family:var(--serif); font-weight:500; line-height:1.02; letter-spacing:.4px; font-size:clamp(38px,11vw,52px); margin:18px 0 8px}
-  h1 em{font-style:italic; color:var(--ouro); text-shadow:0 0 28px rgba(243,214,138,.5)}
+  h1 em{font-style:italic; color:var(--ouro); text-shadow:0 0 28px rgba(243,214,138,.5); animation:emGlow 4.5s ease-in-out infinite}
   .lede{color:var(--mudo); font-size:15.5px; max-width:38ch}
 
   .card{background:linear-gradient(180deg,rgba(40,29,78,.62),rgba(24,17,50,.72)); border:1px solid var(--linha); border-radius:18px; padding:20px; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); box-shadow:0 12px 44px rgba(10,6,30,.5), inset 0 1px 0 rgba(255,255,255,.04)}
@@ -79,6 +103,14 @@
   .hint{font-size:12px;color:var(--mudo);margin-top:6px}
   .manual{display:none;gap:12px;grid-template-columns:1fr 1fr}
   .manual.on{display:grid}
+  .ac-list{position:absolute;left:0;right:0;top:100%;z-index:20;background:var(--camada2);border:1px solid var(--linha);border-radius:12px;margin-top:6px;overflow:hidden;display:none;max-height:236px;overflow-y:auto;box-shadow:0 12px 30px rgba(6,4,20,.5)}
+  .ac-list.on{display:block}
+  .ac-item{padding:11px 14px;cursor:pointer;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--osso)}
+  .ac-item:last-child{border-bottom:none}
+  .ac-item:hover{background:rgba(243,214,138,.12)}
+  .ac-item small{display:block;color:var(--mudo);font-size:11.5px;margin-top:1px}
+  .ac-msg{padding:11px 14px;color:var(--mudo);font-size:13px}
+  .ac-manual{background:none;border:none;color:var(--ouro);font-size:11.5px;text-decoration:underline;cursor:pointer;padding:6px 0 0;font-family:var(--sans)}
   .only-signup{display:block}
   .mode-login .only-signup{display:none}
 
@@ -103,7 +135,11 @@
   .lumi .d{font-family:var(--mono);font-size:10.5px;color:var(--prata)}
 
   .wheelwrap{display:flex;justify-content:center;margin:14px 0 6px}
-  #wheel{width:min(340px,86vw);height:min(340px,86vw)}
+  #wheel{width:min(340px,86vw);height:min(340px,86vw);animation:floaty 7s ease-in-out infinite}
+  .wheel-core{animation:pulseOp 3s ease-in-out infinite}
+  .wheel-star{animation:pulseOp 2.4s ease-in-out infinite}
+  @keyframes ctaPulse{0%,100%{box-shadow:0 8px 24px rgba(201,162,39,.30)}50%{box-shadow:0 10px 36px rgba(243,214,138,.6)}}
+  #desbloquear{animation:ctaPulse 2.6s ease-in-out infinite}
   .planet-glyph{font-size:15px;fill:#fff;filter:url(#glow)}
   .planet-dot{fill:var(--ouro)}
   .sign-glyph{font-size:13px;fill:var(--ouro);opacity:.98;filter:url(#glow)}
@@ -155,14 +191,14 @@
 </style>
 </head>
 <body>
-<div class="ceu"></div>
+<div class="ceu"><div class="twinkle"></div><div class="shoot"></div></div>
 <div class="app">
 
   <!-- ONBOARDING / AUTH -->
   <section id="screen-onboarding" class="screen on mode-signup">
-    <div class="eyebrow">Astrologia sob medida</div>
+    <div class="eyebrow">Previsão 100% Personalizada</div>
     <h1>Previsão<br><em>Astrológica</em> Completa</h1>
-    <p class="lede">Seu mapa natal cruzado, em tempo real, com o céu de hoje — em três frentes: dinheiro, relações e trabalho.</p>
+    <p class="lede">Faça seu cadastro e receba agora mesmo o seu Mapa Natal Personalizado, feito sob medida em tempo real, com o céu de hoje. Dinheiro, Relações e Trabalho — saiba tudo que o futuro está guardando para você!</p>
 
     <div class="seg" id="seg">
       <button data-mode="signup" class="on">Criar conta</button>
@@ -196,9 +232,12 @@
         <div class="hint">Quanto mais exata, mais preciso o ascendente e as casas.</div>
       </div>
       <label class="check only-signup"><input id="semHora" type="checkbox"/> Não sei minha hora de nascimento</label>
-      <div class="field only-signup">
-        <label for="cidade">Cidade de nascimento</label>
-        <select id="cidade"></select>
+      <div class="field only-signup" style="position:relative">
+        <label for="cidadeBusca">Cidade de nascimento</label>
+        <input id="cidadeBusca" type="text" autocomplete="off" placeholder="Digite e selecione sua cidade" />
+        <div class="hint" id="cidadeHint">Comece a digitar o nome e escolha na lista.</div>
+        <button type="button" class="ac-manual" id="manualToggle">não encontrou? inserir coordenadas manualmente</button>
+        <div id="cidadeList" class="ac-list"></div>
       </div>
       <div class="manual only-signup" id="manualCoords">
         <div class="field"><label for="lat">Latitude</label><input id="lat" type="number" step="0.01" placeholder="-30.98"/></div>
@@ -459,31 +498,56 @@ async function apiGet(path){
 }
 
 /* ============================================================
-   Cidades BR + estado
+   Estado
    ============================================================ */
-const CIDADES=[
-["— selecione —",null,null],["Dom Pedrito, RS",-30.98,-54.67],["Porto Alegre, RS",-30.03,-51.22],
-["São Paulo, SP",-23.55,-46.63],["Rio de Janeiro, RJ",-22.91,-43.17],["Belo Horizonte, MG",-19.92,-43.94],
-["Brasília, DF",-15.79,-47.88],["Curitiba, PR",-25.43,-49.27],["Florianópolis, SC",-27.59,-48.55],
-["Salvador, BA",-12.97,-38.51],["Recife, PE",-8.05,-34.88],["Fortaleza, CE",-3.73,-38.52],
-["Manaus, AM",-3.12,-60.02],["Belém, PA",-1.46,-48.50],["Goiânia, GO",-16.69,-49.26],
-["Campinas, SP",-22.91,-47.06],["Vitória, ES",-20.32,-40.34],["Natal, RN",-5.79,-35.21],
-["João Pessoa, PB",-7.12,-34.86],["Maceió, AL",-9.67,-35.74],["Cuiabá, MT",-15.60,-56.10],
-["Campo Grande, MS",-20.47,-54.62],["Teresina, PI",-5.09,-42.80],["São Luís, MA",-2.53,-44.30],
-["Aracaju, SE",-10.95,-37.07],["Santa Maria, RS",-29.68,-53.81],["Pelotas, RS",-31.77,-52.34],
-["Londrina, PR",-23.31,-51.16],["Uberlândia, MG",-18.92,-48.28],["Ribeirão Preto, SP",-21.18,-47.81],
-["Outra cidade (inserir coordenadas)","MANUAL","MANUAL"]
-];
 const OFFSET=-3;
 const $=s=>document.querySelector(s);
 const show=id=>{document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');window.scrollTo(0,0);};
 
 $('#precoLabel').textContent="R$ "+fmtBRL(PRECO);
 $('#pixPreco').textContent=fmtBRL(PRECO);
-const selCidade=$('#cidade');
-CIDADES.forEach((c,i)=>{const o=document.createElement('option');o.value=i;o.textContent=c[0];selCidade.appendChild(o);});
-selCidade.addEventListener('change',()=>{const c=CIDADES[selCidade.value];$('#manualCoords').classList.toggle('on',c&&c[1]==="MANUAL");});
 $('#semHora').addEventListener('change',e=>{$('#horaField').style.display=e.target.checked?'none':'block';});
+
+/* ---- busca de cidade (autocompletar · Photon/OpenStreetMap, gratuito) ---- */
+let CIDADE_SEL=null;               // {label, lat, lon}
+let acTimer=null;
+const acInput=$('#cidadeBusca'), acList=$('#cidadeList');
+function acClose(){acList.classList.remove('on');acList.innerHTML='';}
+function acRender(items){
+  acList.innerHTML='';
+  if(!items.length){acList.innerHTML='<div class="ac-msg">Nenhuma cidade encontrada.</div>';acList.classList.add('on');return;}
+  items.forEach(it=>{
+    const d=document.createElement('div');d.className='ac-item';
+    d.innerHTML=`${it.nome}<small>${it.detalhe}</small>`;
+    d.addEventListener('click',()=>{CIDADE_SEL={label:it.label,lat:it.lat,lon:it.lon};acInput.value=it.label;acClose();$('#cidadeHint').textContent='✓ cidade selecionada';});
+    acList.appendChild(d);
+  });
+  acList.classList.add('on');
+}
+async function acSearch(q){
+  try{
+    const url=`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lang=pt&limit=6&lat=-14.2&lon=-51.9&osm_tag=place`;
+    const r=await fetch(url);const data=await r.json();
+    const tipos=['city','town','village','municipality','hamlet'];
+    let feats=(data.features||[]).filter(f=>f.properties.countrycode==='BR' && tipos.includes(f.properties.osm_value));
+    if(!feats.length)feats=(data.features||[]).filter(f=>f.properties.countrycode==='BR');
+    const items=feats.map(f=>{
+      const p=f.properties,c=f.geometry.coordinates;
+      const uf=p.state||'';
+      return {nome:p.name,detalhe:uf,label:uf?`${p.name}, ${uf}`:p.name,lat:c[1],lon:c[0]};
+    });
+    acRender(items);
+  }catch(e){acList.innerHTML='<div class="ac-msg">Busca indisponível — use as coordenadas manuais.</div>';acList.classList.add('on');}
+}
+acInput.addEventListener('input',()=>{
+  CIDADE_SEL=null;$('#cidadeHint').textContent='Comece a digitar o nome e escolha na lista.';
+  const q=acInput.value.trim();clearTimeout(acTimer);
+  if(q.length<3){acClose();return;}
+  acList.innerHTML='<div class="ac-msg">buscando…</div>';acList.classList.add('on');
+  acTimer=setTimeout(()=>acSearch(q),350);
+});
+document.addEventListener('click',e=>{if(!e.target.closest('#cidadeBusca')&&!e.target.closest('#cidadeList'))acClose();});
+$('#manualToggle').addEventListener('click',()=>{$('#manualCoords').classList.toggle('on');});
 
 /* alternância cadastro/login */
 let MODE="signup";
@@ -504,21 +568,21 @@ async function fazerCadastro(){
   const err=$('#formErr');err.textContent='';
   const nome=$('#nome').value.trim(), email=$('#email').value.trim(), senha=$('#senha').value;
   const whatsapp=$('#whatsapp').value.trim(), data=$('#data').value, semHora=$('#semHora').checked, hora=$('#hora').value;
-  const ci=CIDADES[selCidade.value];
   if(!nome){err.textContent='Me diz seu nome primeiro.';return;}
   if(!email||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){err.textContent='Informe um e-mail válido.';return;}
   if(!senha||senha.length<6){err.textContent='Crie uma senha de pelo menos 6 caracteres.';return;}
   if(!data){err.textContent='Preciso da sua data de nascimento.';return;}
-  if(!ci||ci[1]==null){err.textContent='Escolha a cidade de nascimento.';return;}
-  let lat,lon;
-  if(ci[1]==="MANUAL"){lat=parseFloat($('#lat').value);lon=parseFloat($('#lon').value);if(isNaN(lat)||isNaN(lon)){err.textContent='Informe latitude e longitude.';return;}}
-  else{lat=ci[1];lon=ci[2];}
+  let lat,lon,cidadeNome;
+  const manualOn=$('#manualCoords').classList.contains('on');
+  if(CIDADE_SEL){lat=CIDADE_SEL.lat;lon=CIDADE_SEL.lon;cidadeNome=CIDADE_SEL.label;}
+  else if(manualOn){lat=parseFloat($('#lat').value);lon=parseFloat($('#lon').value);if(isNaN(lat)||isNaN(lon)){err.textContent='Informe latitude e longitude.';return;}cidadeNome=$('#cidadeBusca').value.trim()||'coordenadas manuais';}
+  else{err.textContent='Digite e selecione sua cidade de nascimento na lista.';return;}
   const hasTime=!semHora&&!!hora;
   const [Y,Mo,D]=data.split('-').map(Number);
   let hLocal=12; if(hasTime){const[hh,mm]=hora.split(':').map(Number);hLocal=hh+mm/60;}
   const jd=julianDay(Y,Mo,D,hLocal-OFFSET);
   CHART=computeChart(jd,lat,lon,hasTime);
-  DADOS={nome,email,whatsapp,data,hora,hasTime,cidade:ci[0],lat,lon};
+  DADOS={nome,email,whatsapp,data,hora,hasTime,cidade:cidadeNome,lat,lon};
   UNLOCKED=false;
 
   let msg="";
@@ -618,9 +682,9 @@ function drawWheel(){
     const[lx,ly]=pt(CHART.asc,rSign);
     svg.appendChild(mk('text',{x:lx-2,y:ly+14,class:'sign-glyph','text-anchor':'middle'},'Asc'));
   }
-  svg.appendChild(mk('circle',{cx,cy,r:3.2,fill:'var(--ouro)',filter:'url(#glow)'}));
+  svg.appendChild(mk('circle',{cx,cy,r:3.2,fill:'var(--ouro)',filter:'url(#glow)',class:'wheel-core'}));
   const ty=cy-rOut-1;
-  svg.appendChild(mk('path',{d:`M ${cx} ${ty-7} L ${cx+2.6} ${ty} L ${cx+9} ${ty} L ${cx+3.4} ${ty+3.6} L ${cx+5.5} ${ty+10} L ${cx} ${ty+5.5} L ${cx-5.5} ${ty+10} L ${cx-3.4} ${ty+3.6} L ${cx-9} ${ty} L ${cx-2.6} ${ty} Z`,fill:'var(--ouro)',filter:'url(#glow)',opacity:.92}));
+  svg.appendChild(mk('path',{d:`M ${cx} ${ty-7} L ${cx+2.6} ${ty} L ${cx+9} ${ty} L ${cx+3.4} ${ty+3.6} L ${cx+5.5} ${ty+10} L ${cx} ${ty+5.5} L ${cx-5.5} ${ty+10} L ${cx-3.4} ${ty+3.6} L ${cx-9} ${ty} L ${cx-2.6} ${ty} Z`,fill:'var(--ouro)',filter:'url(#glow)',opacity:.92,class:'wheel-star'}));
   const list=Object.entries(CHART.bodies).map(([k,b])=>({k,lon:b.lon})).sort((a,b)=>a.lon-b.lon);
   let lastA=-999;
   list.forEach(o=>{

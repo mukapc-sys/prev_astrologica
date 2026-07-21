@@ -1,0 +1,12 @@
+{
+  "name": "Previsão Astrológica Completa",
+  "short_name": "Previsão Astral",
+  "description": "Seu mapa natal cruzado, em tempo real, com o céu de hoje.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0C0A1F",
+  "theme_color": "#0C0A1F",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

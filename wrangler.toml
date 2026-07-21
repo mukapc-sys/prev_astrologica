@@ -1,0 +1,30 @@
+name = "previsao-astrologica"
+compatibility_date = "2026-07-21"
+pages_build_output_dir = "public"
+
+# Banco D1 (já criado). Binding "DB".
+[[d1_databases]]
+binding = "DB"
+database_name = "previsao-astrologica"
+database_id = "912978ea-bcdb-4a2e-bc6e-2fc7ff68b671"
+
+# IA rodando NA Cloudflare (Workers AI). Binding "AI" — sem chave externa.
+[ai]
+binding = "AI"
+
+# Variáveis não secretas
+[vars]
+PRECO = "47"
+LLM_PROVIDER = "workers-ai"                              # "workers-ai" ou "external"
+LLM_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"   # modelo aberto na Cloudflare
+
+# Para trocar por provedor externo (ex.: Gemini) mais tarde:
+#   LLM_PROVIDER = "external"
+#   LLM_MODEL    = "gemini-2.5-flash"
+#   LLM_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+#   + segredo LLM_API_KEY
+
+# SEGREDOS (painel: Pages > Settings > Variables and Secrets > Encrypt):
+#   MP_ACCESS_TOKEN  -> Access Token do Mercado Pago
+#   SESSION_SECRET   -> frase aleatória longa (assina os tokens de login)
+#   (com Workers AI você NÃO precisa de chave de IA)

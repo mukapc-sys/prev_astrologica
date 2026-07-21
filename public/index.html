@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0C0A1F">
+<title>Previsão Astrológica Completa</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --noite:#0C0A1F; --camada:#171233; --camada2:#20184A;
+    --ouro:#F3D68A; --ouro-forte:#E4B44C; --prata:#B9B4E0;
+    --violeta:#6B4CC4; --magenta:#B268C8; --vinho:#7A2E5A; --osso:#F1EEF7; --mudo:#9A93C0;
+    --linha:rgba(243,214,138,.22); --glow:rgba(243,214,138,.55);
+    --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    --mono:"Space Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{background:var(--noite); color:var(--osso); font-family:var(--sans); -webkit-font-smoothing:antialiased; overflow-x:hidden; line-height:1.55;}
+  .ceu{position:fixed; inset:0; z-index:0; overflow:hidden;
+    background:
+      radial-gradient(85% 65% at 80% 10%, rgba(178,104,200,.34) 0%, transparent 55%),
+      radial-gradient(80% 62% at 12% 88%, rgba(107,76,196,.40) 0%, transparent 55%),
+      radial-gradient(120% 90% at 50% -18%, #2b1c5e 0%, transparent 60%),
+      radial-gradient(110% 85% at 50% 122%, #241148 0%, transparent 60%),
+      var(--noite);}
+  .ceu::after{content:"";position:absolute;inset:-25%;pointer-events:none;
+    background:
+      radial-gradient(38% 28% at 80% 16%, rgba(196,120,214,.30), transparent 70%),
+      radial-gradient(44% 32% at 14% 84%, rgba(122,92,214,.32), transparent 70%),
+      radial-gradient(30% 22% at 58% 62%, rgba(150,110,232,.16), transparent 70%);
+    filter:blur(34px); animation:drift2 220s linear infinite; opacity:.95;}
+  .ceu::before{content:"";position:absolute;inset:-50%;background-repeat:repeat;
+    background-image:
+      radial-gradient(1.5px 1.5px at 20% 30%, #ffffffcc 40%, transparent),
+      radial-gradient(1.2px 1.2px at 70% 60%, #ffffffaa 40%, transparent),
+      radial-gradient(1px 1px at 40% 80%, #ffffff99 40%, transparent),
+      radial-gradient(1.7px 1.7px at 85% 20%, var(--ouro) 40%, transparent),
+      radial-gradient(1.3px 1.3px at 30% 55%, var(--ouro) 40%, transparent),
+      radial-gradient(1px 1px at 55% 15%, #ffffff88 40%, transparent),
+      radial-gradient(1.1px 1.1px at 10% 65%, #ffffff88 40%, transparent),
+      radial-gradient(1px 1px at 92% 78%, #ffffff88 40%, transparent);
+    background-size:340px 340px,420px 420px,300px 300px,500px 500px,470px 470px,260px 260px,380px 380px,410px 410px;
+    animation:drift 180s linear infinite; opacity:.8;}
+  @keyframes drift{to{transform:translate(-140px,-90px)}}
+  @keyframes drift2{to{transform:translate(64px,-42px)}}
+  @media (prefers-reduced-motion:reduce){.ceu::before,.ceu::after{animation:none}}
+
+  .app{position:relative; z-index:1; max-width:480px; margin:0 auto; min-height:100dvh;
+    padding:calc(env(safe-area-inset-top) + 22px) 22px calc(env(safe-area-inset-bottom) + 40px);}
+  .screen{display:none; animation:rise .6s ease both}
+  .screen.on{display:block}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.32em; text-transform:uppercase; color:var(--ouro); display:flex; align-items:center; gap:10px}
+  .eyebrow::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--linha),transparent)}
+  h1{font-family:var(--serif); font-weight:500; line-height:1.02; letter-spacing:.4px; font-size:clamp(38px,11vw,52px); margin:18px 0 8px}
+  h1 em{font-style:italic; color:var(--ouro); text-shadow:0 0 28px rgba(243,214,138,.5)}
+  .lede{color:var(--mudo); font-size:15.5px; max-width:38ch}
+
+  .card{background:linear-gradient(180deg,rgba(40,29,78,.62),rgba(24,17,50,.72)); border:1px solid var(--linha); border-radius:18px; padding:20px; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); box-shadow:0 12px 44px rgba(10,6,30,.5), inset 0 1px 0 rgba(255,255,255,.04)}
+
+  .seg{display:flex;gap:6px;margin:24px 0 4px;background:rgba(11,10,31,.5);border:1px solid var(--linha);border-radius:12px;padding:4px}
+  .seg button{flex:1;background:transparent;border:none;color:var(--mudo);font-family:var(--sans);font-weight:600;font-size:13px;padding:10px;border-radius:9px;cursor:pointer}
+  .seg button.on{background:linear-gradient(180deg,var(--ouro),var(--ouro-forte));color:#20170a}
+
+  .form{margin-top:16px; display:grid; gap:16px}
+  label{display:block; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--prata); margin-bottom:7px; font-weight:500}
+  .field input,.field select{width:100%; background:rgba(11,10,31,.6); color:var(--osso); border:1px solid rgba(185,180,224,.24); border-radius:12px; padding:14px 14px; font-family:var(--sans); font-size:16px; outline:none; transition:border-color .2s, box-shadow .2s}
+  .field input:focus,.field select:focus{border-color:var(--ouro); box-shadow:0 0 0 3px rgba(243,214,138,.14)}
+  select{appearance:none; background-image:linear-gradient(45deg,transparent 50%,var(--ouro) 50%),linear-gradient(135deg,var(--ouro) 50%,transparent 50%); background-position:calc(100% - 18px) 22px,calc(100% - 12px) 22px; background-size:6px 6px,6px 6px; background-repeat:no-repeat}
+  .check{display:flex; align-items:center; gap:10px; color:var(--mudo); font-size:13.5px; cursor:pointer; user-select:none}
+  .check input{width:18px;height:18px;accent-color:var(--ouro-forte)}
+  .hint{font-size:12px;color:var(--mudo);margin-top:6px}
+  .manual{display:none;gap:12px;grid-template-columns:1fr 1fr}
+  .manual.on{display:grid}
+  .only-signup{display:block}
+  .mode-login .only-signup{display:none}
+
+  .btn{width:100%; border:none; cursor:pointer; font-family:var(--sans); font-weight:600; font-size:16px; letter-spacing:.02em; padding:16px; border-radius:12px; background:linear-gradient(180deg,var(--ouro),var(--ouro-forte)); color:#20170a; box-shadow:0 8px 24px rgba(201,162,39,.28); transition:transform .15s, box-shadow .15s}
+  .btn:hover{transform:translateY(-1px); box-shadow:0 12px 30px rgba(201,162,39,.36)}
+  .btn:active{transform:translateY(0)}
+  .btn.ghost{background:transparent;color:var(--ouro);border:1px solid var(--linha);box-shadow:none}
+
+  #screen-loading{text-align:center;padding-top:16vh}
+  .dial{width:130px;height:130px;margin:26px auto}
+  .dial svg{width:100%;height:100%;animation:spin 8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loadmsg{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;color:var(--prata);text-transform:uppercase}
+
+  .ident{text-align:center;margin-bottom:8px}
+  .ident .nome{font-family:var(--serif);font-size:30px;font-weight:500}
+  .bigthree{display:flex;justify-content:center;gap:10px;margin:16px 0 6px;flex-wrap:wrap}
+  .lumi{background:rgba(11,10,31,.5);border:1px solid var(--linha);border-radius:12px;padding:10px 12px;min-width:96px;text-align:center}
+  .lumi .k{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--mudo)}
+  .lumi .glyph{font-size:20px;color:var(--ouro);line-height:1.1;margin:3px 0}
+  .lumi .v{font-family:var(--serif);font-size:17px}
+  .lumi .d{font-family:var(--mono);font-size:10.5px;color:var(--prata)}
+
+  .wheelwrap{display:flex;justify-content:center;margin:14px 0 6px}
+  #wheel{width:min(340px,86vw);height:min(340px,86vw)}
+  .planet-glyph{font-size:15px;fill:#fff;filter:url(#glow)}
+  .planet-dot{fill:var(--ouro)}
+  .sign-glyph{font-size:13px;fill:var(--ouro);opacity:.98;filter:url(#glow)}
+  .ring{fill:none;stroke:var(--ouro-forte);stroke-opacity:.6;filter:url(#glow)}
+  .tick{stroke:rgba(185,180,224,.30)}
+  .axis{stroke:var(--ouro);stroke-width:1.2;opacity:.75;filter:url(#glow)}
+  .spoke{stroke:var(--ouro-forte);stroke-opacity:.18}
+
+  .sec-title{font-family:var(--serif);font-size:24px;font-weight:500;margin:26px 0 4px;display:flex;align-items:baseline;gap:10px}
+  .sec-title .idx{font-family:var(--mono);font-size:12px;color:var(--ouro)}
+  .weekly{margin-top:10px}
+  .prose{color:#dcdae6;font-size:15px;white-space:pre-wrap}
+  .prose.serif-lead::first-letter{font-family:var(--serif);font-size:40px;float:left;line-height:.8;padding:6px 8px 0 0;color:var(--ouro)}
+
+  .maps{display:grid;gap:16px;margin-top:14px}
+  .map{position:relative;overflow:hidden}
+  .map h3{font-family:var(--serif);font-size:22px;font-weight:500;margin-bottom:2px}
+  .map .area-k{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--prata)}
+  .map .transits{font-family:var(--mono);font-size:11px;color:var(--ouro);opacity:.85;margin:8px 0 12px;line-height:1.7}
+  .locked .prose{filter:blur(6px);opacity:.5;pointer-events:none;user-select:none;max-height:120px;overflow:hidden}
+  .lockbar{position:absolute;inset:auto 0 0 0;padding:22px 18px 18px;background:linear-gradient(180deg,transparent,rgba(24,17,50,.96)46%);text-align:center;display:none}
+  .locked .lockbar{display:block}
+  .lockbar .lk{font-size:13px;color:var(--prata);display:flex;align-items:center;justify-content:center;gap:7px}
+
+  .paywall{margin-top:26px;text-align:center;border-color:rgba(243,214,138,.34)}
+  .paywall .price{font-family:var(--serif);font-size:44px;color:var(--ouro);line-height:1}
+  .paywall .price small{font-size:15px;color:var(--mudo);font-family:var(--sans)}
+  .paywall ul{list-style:none;margin:16px 0;display:grid;gap:8px;text-align:left}
+  .paywall li{font-size:14px;color:#dcdae6;display:flex;gap:9px;align-items:flex-start}
+  .paywall li::before{content:"✦";color:var(--ouro)}
+  .secure{font-size:11.5px;color:var(--mudo);margin-top:10px;font-family:var(--mono);letter-spacing:.08em}
+
+  .pixModal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(6,4,18,.82);backdrop-filter:blur(4px)}
+  .pixModal.on{display:flex}
+  .pixBox{max-width:360px;width:100%;text-align:center}
+  .pixVal{font-family:var(--serif);font-size:32px;color:var(--ouro);margin:8px 0 12px}
+  .pixQr{width:200px;height:200px;background:#fff;border-radius:12px;padding:8px;margin:0 auto 12px;display:block}
+  .pixHint{font-size:12.5px;color:var(--mudo);margin-bottom:12px}
+  .pixCopia{width:100%;font-family:var(--mono);font-size:11px;color:var(--osso);background:rgba(11,10,31,.6);border:1px solid var(--linha);border-radius:10px;padding:10px;resize:none;margin-bottom:10px}
+  .pixStatus{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--ouro);margin:12px 0}
+
+  .spinner{width:16px;height:16px;border:2px solid rgba(243,214,138,.3);border-top-color:var(--ouro);border-radius:50%;display:inline-block;animation:spin 0.8s linear infinite;vertical-align:-2px}
+  .err{color:#e6a6a6;font-size:13px;margin-top:8px}
+  .footnote{margin-top:30px;font-size:11px;color:var(--mudo);text-align:center;line-height:1.6;font-family:var(--mono);letter-spacing:.04em}
+  .savestate{margin-top:16px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-align:center;color:var(--mudo)}
+  .savestate.ok{color:var(--ouro)}
+  .topbar{display:flex;justify-content:flex-end}
+  .logout{background:none;border:none;color:var(--mudo);font-family:var(--mono);font-size:11px;cursor:pointer;text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="ceu"></div>
+<div class="app">
+
+  <!-- ONBOARDING / AUTH -->
+  <section id="screen-onboarding" class="screen on mode-signup">
+    <div class="eyebrow">Astrologia sob medida</div>
+    <h1>Previsão<br><em>Astrológica</em> Completa</h1>
+    <p class="lede">Seu mapa natal cruzado, em tempo real, com o céu de hoje — em três frentes: dinheiro, relações e trabalho.</p>
+
+    <div class="seg" id="seg">
+      <button data-mode="signup" class="on">Criar conta</button>
+      <button data-mode="login">Entrar</button>
+    </div>
+
+    <div class="form card">
+      <div class="field only-signup">
+        <label for="nome">Como você se chama</label>
+        <input id="nome" type="text" autocomplete="given-name" placeholder="Seu nome" />
+      </div>
+      <div class="field">
+        <label for="email">E-mail</label>
+        <input id="email" type="email" autocomplete="email" placeholder="voce@email.com" />
+      </div>
+      <div class="field">
+        <label for="senha">Senha</label>
+        <input id="senha" type="password" autocomplete="current-password" placeholder="••••••••" />
+      </div>
+      <div class="field only-signup">
+        <label for="whatsapp">WhatsApp <span style="text-transform:none;color:var(--mudo)">(opcional)</span></label>
+        <input id="whatsapp" type="tel" autocomplete="tel" placeholder="(00) 00000-0000" />
+      </div>
+      <div class="field only-signup">
+        <label for="data">Data de nascimento</label>
+        <input id="data" type="date" />
+      </div>
+      <div class="field only-signup" id="horaField">
+        <label for="hora">Hora de nascimento</label>
+        <input id="hora" type="time" />
+        <div class="hint">Quanto mais exata, mais preciso o ascendente e as casas.</div>
+      </div>
+      <label class="check only-signup"><input id="semHora" type="checkbox"/> Não sei minha hora de nascimento</label>
+      <div class="field only-signup">
+        <label for="cidade">Cidade de nascimento</label>
+        <select id="cidade"></select>
+      </div>
+      <div class="manual only-signup" id="manualCoords">
+        <div class="field"><label for="lat">Latitude</label><input id="lat" type="number" step="0.01" placeholder="-30.98"/></div>
+        <div class="field"><label for="lon">Longitude</label><input id="lon" type="number" step="0.01" placeholder="-54.67"/></div>
+      </div>
+      <button class="btn" id="gerar">Criar conta e revelar meu céu</button>
+      <div class="err" id="formErr"></div>
+    </div>
+    <div class="footnote">Cálculo astronômico real de posições planetárias, ascendente e trânsitos. Leitura de orientação e reflexão — não previsão determinística de fatos.</div>
+  </section>
+
+  <!-- LOADING -->
+  <section id="screen-loading" class="screen">
+    <div class="eyebrow" style="justify-content:center">Consultando o céu</div>
+    <div class="dial">
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="var(--linha)" stroke-width="1"/>
+        <circle cx="50" cy="50" r="34" fill="none" stroke="rgba(185,180,224,.2)" stroke-width="1"/>
+        <g stroke="var(--ouro)" stroke-width="1.4">
+          <line x1="50" y1="4" x2="50" y2="14"/><line x1="96" y1="50" x2="86" y2="50"/>
+          <line x1="50" y1="96" x2="50" y2="86"/><line x1="4" y1="50" x2="14" y2="50"/>
+        </g>
+        <circle cx="50" cy="16" r="2.4" fill="var(--ouro)"/>
+      </svg>
+    </div>
+    <div class="loadmsg" id="loadmsg">Localizando os planetas…</div>
+  </section>
+
+  <!-- RESULTADO -->
+  <section id="screen-result" class="screen">
+    <div class="topbar"><button class="logout" id="logout">sair</button></div>
+    <div class="ident">
+      <div class="eyebrow" style="justify-content:center">Seu retrato do céu</div>
+      <div class="nome" id="r-nome"></div>
+      <div class="bigthree" id="bigthree"></div>
+    </div>
+
+    <div class="wheelwrap"><svg id="wheel" viewBox="0 0 340 340" aria-label="Roda do céu"></svg></div>
+
+    <div class="card weekly">
+      <div class="sec-title"><span class="idx">☀</span> Clima astral desta semana</div>
+      <div class="prose" id="weekly"><span class="spinner"></span> lendo os trânsitos de hoje…</div>
+    </div>
+
+    <div class="sec-title" style="margin-top:30px">A previsão completa</div>
+    <p class="lede" style="font-size:14px">Três mapas profundos, cada um cruzando seus planetas natais com os astros de agora.</p>
+
+    <div class="maps" id="maps"></div>
+
+    <div class="card paywall" id="paywall">
+      <div class="eyebrow" style="justify-content:center">Desbloquear tudo</div>
+      <div class="price" style="margin-top:12px"><span id="precoLabel">R$ 47</span><small> / pagamento único</small></div>
+      <ul>
+        <li>Mapa Financeiro completo — ciclos de ganho, cautela e investimento</li>
+        <li>Mapa Relacional completo — afetos, vínculos e o que os trânsitos pedem</li>
+        <li>Mapa Profissional completo — direção, visibilidade e timing de decisões</li>
+        <li>Horóscopo semanal e alertas dos astros, direto no app</li>
+      </ul>
+      <button class="btn" id="desbloquear">Desbloquear com PIX</button>
+      <div class="secure">🔒 pagamento via Mercado Pago · PIX</div>
+    </div>
+
+    <div class="savestate" id="saveState"></div>
+  </section>
+
+  <!-- MODAL PIX -->
+  <div class="pixModal" id="pixModal">
+    <div class="pixBox card">
+      <div class="eyebrow" style="justify-content:center">Pague com PIX</div>
+      <div class="pixVal">R$ <span id="pixPreco"></span></div>
+      <img id="pixQr" class="pixQr" alt="QR Code do PIX"/>
+      <div class="pixHint">Abra o app do seu banco, escaneie o QR ou use o código copia-e-cola abaixo. A liberação é automática assim que o pagamento cair.</div>
+      <textarea id="pixCopia" class="pixCopia" readonly rows="3"></textarea>
+      <button class="btn" id="pixCopyBtn">Copiar código</button>
+      <div class="pixStatus" id="pixStatus">Aguardando pagamento…</div>
+      <button class="btn ghost" id="pixClose" style="margin-top:6px">Fechar</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   CONFIG — API_BASE vazio = mesma origem (produção Cloudflare).
+   No preview (Claude.ai) as chamadas /api/* falham e o app cai
+   automaticamente num modo de demonstração.
+   ============================================================ */
+const API_BASE = "";
+const PRECO    = 47;
+
+/* ============================================================
+   MOTOR ASTROLÓGICO — validado contra efemérides reais
+   ============================================================ */
+const DEG=Math.PI/180, RAD=180/Math.PI;
+const norm360=x=>((x%360)+360)%360;
+const SIGNS=["Áries","Touro","Gêmeos","Câncer","Leão","Virgem","Libra","Escorpião","Sagitário","Capricórnio","Aquário","Peixes"];
+const SIGN_GLYPH=["♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓"];
+const PLANET_GLYPH={Sol:"☉",Lua:"☽",Mercurio:"☿",Venus:"♀",Marte:"♂",Jupiter:"♃",Saturno:"♄",Urano:"♅",Netuno:"♆",Plutao:"♇"};
+const PLANET_PT={Sol:"Sol",Lua:"Lua",Mercurio:"Mercúrio",Venus:"Vênus",Marte:"Marte",Jupiter:"Júpiter",Saturno:"Saturno",Urano:"Urano",Netuno:"Netuno",Plutao:"Plutão"};
+function signOf(lon){lon=norm360(lon);const i=Math.floor(lon/30);return{sign:SIGNS[i],glyph:SIGN_GLYPH[i],deg:lon-i*30,idx:i,lon};}
+function julianDay(y,m,d,hourUT){if(m<=2){y-=1;m+=12;}const A=Math.floor(y/100),B=2-A+Math.floor(A/4);return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+B-1524.5+hourUT/24;}
+const T_cent=jd=>(jd-2451545.0)/36525;
+const obliquity=T=>23.439291-0.0130042*T;
+const precession=T=>1.396971*T;
+function sunLon(jd){const T=T_cent(jd);const L0=norm360(280.46646+36000.76983*T);const M=(357.52911+35999.05029*T)*DEG;const C=(1.914602-0.004817*T)*Math.sin(M)+0.019993*Math.sin(2*M)+0.000289*Math.sin(3*M);return norm360(L0+C);}
+function moonLon(jd){
+  const d=jd-2451543.5;
+  const N=(125.1228-0.0529538083*d)*DEG,i=5.1454*DEG,w=(318.0634+0.1643573223*d)*DEG;
+  const M=norm360(115.3654+13.0649929509*d)*DEG,e=0.054900,a=60.2666;
+  let E=M+e*Math.sin(M)*(1+e*Math.cos(M));
+  for(let k=0;k<6;k++)E=E-(E-e*Math.sin(E)-M)/(1-e*Math.cos(E));
+  const xv=a*(Math.cos(E)-e),yv=a*Math.sqrt(1-e*e)*Math.sin(E);
+  const v=Math.atan2(yv,xv),r=Math.sqrt(xv*xv+yv*yv);
+  const xh=r*(Math.cos(N)*Math.cos(v+w)-Math.sin(N)*Math.sin(v+w)*Math.cos(i));
+  const yh=r*(Math.sin(N)*Math.cos(v+w)+Math.cos(N)*Math.sin(v+w)*Math.cos(i));
+  const Lm=norm360(N*RAD+w*RAD+M*RAD),Ls=norm360(280.0+0.9856474*d);
+  const D=(Lm-Ls)*DEG,Ms=norm360(356.0470+0.9856002585*d)*DEG,Mm=M,Dd=D;
+  let dl=0;
+  dl+=-1.274*Math.sin(Mm-2*Dd); dl+=0.658*Math.sin(2*Dd); dl+=-0.186*Math.sin(Ms);
+  dl+=-0.059*Math.sin(2*Mm-2*Dd); dl+=-0.057*Math.sin(Mm-2*Dd+Ms); dl+=0.053*Math.sin(Mm+2*Dd);
+  dl+=0.046*Math.sin(2*Dd-Ms); dl+=0.041*Math.sin(Mm-Ms); dl+=-0.035*Math.sin(Dd);
+  dl+=-0.031*Math.sin(Mm+Ms);
+  return norm360(Math.atan2(yh,xh)*RAD+dl);
+}
+const PL={
+  Mercurio:[0.38709927,0.20563593,7.00497902,252.25032350,77.45779628,48.33076593,0.00000037,0.00001906,-0.00594749,149472.67411175,0.16047689,-0.12534081],
+  Venus:[0.72333566,0.00677672,3.39467605,181.97909950,131.60246718,76.67984255,0.00000390,-0.00004107,-0.00078890,58517.81538729,0.00268329,-0.27769418],
+  Terra:[1.00000261,0.01671123,-0.00001531,100.46457166,102.93768193,0.0,0.00000562,-0.00004392,-0.01294668,35999.37244981,0.32327364,0.0],
+  Marte:[1.52371034,0.09339410,1.84969142,-4.55343205,-23.94362959,49.55953891,0.00001847,0.00007882,-0.00813131,19140.30268499,0.44441088,-0.29257343],
+  Jupiter:[5.20288700,0.04838624,1.30439695,34.39644051,14.72847983,100.47390909,-0.00011607,-0.00013253,-0.00183714,3034.74612775,0.21252668,0.20469106],
+  Saturno:[9.53667594,0.05386179,2.48599187,49.95424423,92.59887831,113.66242448,-0.00125060,-0.00050991,0.00193609,1222.49362201,-0.41897216,-0.28867794],
+  Urano:[19.18916464,0.04725744,0.77263783,313.23810451,170.95427630,74.01692503,-0.00196176,-0.00004397,-0.00242939,428.48202785,0.40805281,0.04240589],
+  Netuno:[30.06992276,0.00859048,1.77004347,-55.12002969,44.96476227,131.78422574,0.00026291,0.00005105,0.00035372,218.45945325,-0.32241464,-0.00508664],
+  Plutao:[39.48211675,0.24882730,17.14001206,238.92903833,224.06891629,110.30393684,-0.00031596,0.00005170,0.00004818,145.20780515,-0.04062942,-0.01183482]
+};
+function planetHelio(name,jd){
+  const T=T_cent(jd),p=PL[name];
+  const a=p[0]+p[6]*T,e=p[1]+p[7]*T,I=(p[2]+p[8]*T)*DEG,L=p[3]+p[9]*T,wbar=p[4]+p[10]*T,OmDeg=p[5]+p[11]*T,Om=OmDeg*DEG;
+  let M=norm360(L-wbar); if(M>180)M-=360;
+  const ed=e*RAD; let Edeg=M+ed*Math.sin(M*DEG);
+  for(let k=0;k<8;k++){const dM=M-(Edeg-ed*Math.sin(Edeg*DEG));const dE=dM/(1-e*Math.cos(Edeg*DEG));Edeg+=dE;if(Math.abs(dE)<1e-7)break;}
+  const Er=Edeg*DEG;
+  const xp=a*(Math.cos(Er)-e),yp=a*Math.sqrt(1-e*e)*Math.sin(Er);
+  const argp=(wbar-OmDeg)*DEG;
+  const cO=Math.cos(Om),sO=Math.sin(Om),cI=Math.cos(I),sI=Math.sin(I),cw=Math.cos(argp),sw=Math.sin(argp);
+  return{x:(cw*cO-sw*sO*cI)*xp+(-sw*cO-cw*sO*cI)*yp,y:(cw*sO+sw*cO*cI)*xp+(-sw*sO+cw*cO*cI)*yp,z:(sw*sI)*xp+(cw*sI)*yp};
+}
+function planetLon(name,jd){const pl=planetHelio(name,jd),earth=planetHelio("Terra",jd);return norm360(Math.atan2(pl.y-earth.y,pl.x-earth.x)*RAD+precession(T_cent(jd)));}
+function gmst(jd){const T=T_cent(jd);return norm360(280.46061837+360.98564736629*(jd-2451545.0)+0.000387933*T*T);}
+function ascMc(jd,latDeg,lonDeg){
+  const lst=norm360(gmst(jd)+lonDeg),eps=obliquity(T_cent(jd))*DEG,ramc=lst*DEG,lat=latDeg*DEG;
+  let mc=norm360(Math.atan2(Math.sin(ramc),Math.cos(ramc)*Math.cos(eps))*RAD);
+  let asc=norm360(Math.atan2(Math.cos(ramc),-(Math.sin(ramc)*Math.cos(eps)+Math.tan(lat)*Math.sin(eps)))*RAD);
+  const diff=norm360(asc-mc); if(diff<0||diff>180)asc=norm360(asc+180);
+  return{asc,mc};
+}
+function computeChart(jd,lat,lon,hasTime){
+  const bodies={};
+  bodies.Sol={lon:sunLon(jd)}; bodies.Lua={lon:moonLon(jd)};
+  for(const p of ["Mercurio","Venus","Marte","Jupiter","Saturno","Urano","Netuno","Plutao"]) bodies[p]={lon:planetLon(p,jd)};
+  let asc=null,mc=null,ascIdx=0;
+  if(hasTime && lat!=null && lon!=null){const a=ascMc(jd,lat,lon);asc=a.asc;mc=a.mc;ascIdx=Math.floor(norm360(asc)/30);}
+  for(const k in bodies){const s=signOf(bodies[k].lon);bodies[k].sign=s.sign;bodies[k].glyph=s.glyph;bodies[k].deg=s.deg;bodies[k].idx=s.idx;
+    if(hasTime){let h=((s.idx-ascIdx)%12+12)%12+1;bodies[k].house=h;}}
+  for(const k in bodies){if(k!=='Sol'&&k!=='Lua'){let dv=planetLon(k,jd+0.5)-planetLon(k,jd-0.5);if(dv>180)dv-=360;if(dv<-180)dv+=360;bodies[k].retro=dv<0;}}
+  return{bodies,asc,mc,ascIdx,hasTime};
+}
+const ASPECTS=[{n:"conjunção",a:0,o:8},{n:"sextil",a:60,o:5},{n:"quadratura",a:90,o:6},{n:"trígono",a:120,o:7},{n:"oposição",a:180,o:8}];
+function aspectBetween(l1,l2){let d=Math.abs(norm360(l1-l2));if(d>180)d=360-d;for(const A of ASPECTS){if(Math.abs(d-A.a)<=A.o)return{name:A.n,orb:+(Math.abs(d-A.a)).toFixed(1)};}return null;}
+function natalAspects(bodies){
+  const keys=Object.keys(bodies),out=[];
+  for(let i=0;i<keys.length;i++)for(let j=i+1;j<keys.length;j++){const a=aspectBetween(bodies[keys[i]].lon,bodies[keys[j]].lon);if(a)out.push({a:keys[i],b:keys[j],...a});}
+  return out.sort((x,y)=>x.orb-y.orb);
+}
+const SLOW=["Jupiter","Saturno","Urano","Netuno","Plutao"];
+function currentTransits(natal){
+  const now=new Date();const jd=julianDay(now.getUTCFullYear(),now.getUTCMonth()+1,now.getUTCDate(),now.getUTCHours()+now.getUTCMinutes()/60);
+  const trans={};trans.Sol=sunLon(jd);trans.Lua=moonLon(jd);
+  for(const p of ["Mercurio","Venus","Marte","Jupiter","Saturno","Urano","Netuno","Plutao"])trans[p]=planetLon(p,jd);
+  const targets={...natal.bodies}; if(natal.asc!=null)targets.Ascendente={lon:natal.asc}; if(natal.mc!=null)targets.MeioCeu={lon:natal.mc};
+  const hits=[];
+  for(const tp in trans){for(const tg in targets){const a=aspectBetween(trans[tp],targets[tg].lon);if(a){const weight=(SLOW.includes(tp)?0:3)+a.orb;hits.push({transit:tp,target:tg,name:a.name,orb:a.orb,slow:SLOW.includes(tp),weight});}}}
+  hits.sort((x,y)=>x.weight-y.weight);
+  return{jd,trans,hits};
+}
+function chartExtras(){
+  const b=CHART.bodies;
+  const ELN=['Fogo','Terra','Ar','Água'],MDN=['Cardinal','Fixo','Mutável'];
+  const el={Fogo:0,Terra:0,Ar:0,'Água':0},md={Cardinal:0,Fixo:0,'Mutável':0};
+  for(const k in b){el[ELN[b[k].idx%4]]++;md[MDN[b[k].idx%3]]++;}
+  const retros=Object.keys(b).filter(k=>b[k].retro).map(k=>PLANET_PT[k]);
+  let ruler=null;
+  if(CHART.hasTime){
+    const ascIdx=Math.floor(norm360(CHART.asc)/30);
+    const RK=['Marte','Venus','Mercurio','Lua','Sol','Mercurio','Venus','Plutao','Jupiter','Saturno','Urano','Netuno'];
+    const rk=RK[ascIdx];ruler={planet:PLANET_PT[rk],sign:b[rk].sign,house:b[rk].house||null};
+  }
+  const now=new Date();
+  const jd=julianDay(now.getUTCFullYear(),now.getUTCMonth()+1,now.getUTCDate(),now.getUTCHours()+now.getUTCMinutes()/60);
+  const elong=norm360(moonLon(jd)-sunLon(jd));
+  const PH=['Lua Nova','Lua Crescente','Quarto Crescente','Gibosa Crescente','Lua Cheia','Gibosa Minguante','Quarto Minguante','Lua Minguante'];
+  return {el,md,retros,ruler,phase:PH[Math.round(elong/45)%8],moonSign:signOf(moonLon(jd)).sign};
+}
+function chartSnapshot(){
+  const b=CHART.bodies,out={hasTime:CHART.hasTime,bodies:{}};
+  for(const k in b)out.bodies[k]={sign:b[k].sign,deg:+b[k].deg.toFixed(2),lon:+b[k].lon.toFixed(2),house:b[k].house||null,retro:!!b[k].retro};
+  if(CHART.hasTime){out.asc=+CHART.asc.toFixed(2);out.mc=+CHART.mc.toFixed(2);}
+  out.natalAspects=natalAspects(b).slice(0,6).map(a=>({a:a.a,b:a.b,aspect:a.name,orb:a.orb}));
+  out.transits=currentTransits(CHART).hits.slice(0,8).map(h=>({transit:h.transit,target:h.target,aspect:h.name,orb:h.orb,slow:h.slow}));
+  out.extras=chartExtras();
+  out.snapshotAt=new Date().toISOString();
+  return out;
+}
+function chartSummary(){
+  const b=CHART.bodies;
+  let s=`DADOS: ${DADOS.nome}, nascido(a) em ${DADOS.cidade}.\nMAPA NATAL:\n`;
+  for(const k in b){s+=`- ${PLANET_PT[k]}: ${b[k].sign} ${b[k].deg.toFixed(1)}°${b[k].retro?' R':''}${b[k].house?` (casa ${b[k].house})`:''}\n`;}
+  if(CHART.hasTime){s+=`- Ascendente: ${signOf(CHART.asc).sign} ${signOf(CHART.asc).deg.toFixed(1)}°\n- Meio-Céu: ${signOf(CHART.mc).sign} ${signOf(CHART.mc).deg.toFixed(1)}°\n`;}
+  const na=natalAspects(b).slice(0,5);
+  if(na.length){s+='ASPECTOS NATAIS PRINCIPAIS:\n';na.forEach(a=>s+=`- ${PLANET_PT[a.a]} ${a.name} ${PLANET_PT[a.b]} (orbe ${a.orb}°)\n`);}
+  const tr=currentTransits(CHART);const top=tr.hits.slice(0,7);
+  const TG=t=>t==='Ascendente'?'Ascendente':t==='MeioCeu'?'Meio-Céu':PLANET_PT[t]||t;
+  s+=`TRÂNSITOS DE HOJE (${new Date().toLocaleDateString('pt-BR')}) sobre o mapa:\n`;
+  top.forEach(h=>s+=`- ${PLANET_PT[h.transit]} em trânsito faz ${h.name} ao seu ${TG(h.target)} natal (orbe ${h.orb}°)${h.slow?' [ciclo longo]':''}\n`);
+  const x=chartExtras();
+  s+=`TEMPERAMENTO: elementos — ${Object.entries(x.el).map(([k,v])=>k+' '+v).join(', ')}; modalidades — ${Object.entries(x.md).map(([k,v])=>k+' '+v).join(', ')}.\n`;
+  s+= x.retros.length ? `RETRÓGRADOS natais: ${x.retros.join(', ')}.\n` : `Sem planetas retrógrados no mapa natal.\n`;
+  if(x.ruler) s+=`REGENTE DO MAPA: ${x.ruler.planet} em ${x.ruler.sign}${x.ruler.house?', casa '+x.ruler.house:''}.\n`;
+  s+=`CÉU DE HOJE: ${x.phase}, Lua transitando em ${x.moonSign}.\n`;
+  return {text:s, transits:top, TG};
+}
+
+/* ============================================================
+   Sessão + chamadas às funções (D1 / Workers AI / Mercado Pago)
+   ============================================================ */
+const store={
+  get(k){try{return localStorage.getItem(k);}catch(e){return null;}},
+  set(k,v){try{localStorage.setItem(k,v);}catch(e){}},
+  del(k){try{localStorage.removeItem(k);}catch(e){}}
+};
+let SESSION=store.get("pac_token")||null;
+let CHART=null, DADOS=null, LEAD_ID=null, UNLOCKED=false, DEMO=false;
+
+async function apiPost(path,body,auth){
+  const headers={"Content-Type":"application/json"};
+  if(auth&&SESSION)headers["Authorization"]="Bearer "+SESSION;
+  const res=await fetch(API_BASE+path,{method:"POST",headers,body:JSON.stringify(body)});
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok)throw new Error(data.error||("HTTP "+res.status));
+  return data;
+}
+async function apiGet(path){
+  const res=await fetch(API_BASE+path,{headers:SESSION?{"Authorization":"Bearer "+SESSION}:{}});
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok)throw new Error(data.error||("HTTP "+res.status));
+  return data;
+}
+
+/* ============================================================
+   Cidades BR + estado
+   ============================================================ */
+const CIDADES=[
+["— selecione —",null,null],["Dom Pedrito, RS",-30.98,-54.67],["Porto Alegre, RS",-30.03,-51.22],
+["São Paulo, SP",-23.55,-46.63],["Rio de Janeiro, RJ",-22.91,-43.17],["Belo Horizonte, MG",-19.92,-43.94],
+["Brasília, DF",-15.79,-47.88],["Curitiba, PR",-25.43,-49.27],["Florianópolis, SC",-27.59,-48.55],
+["Salvador, BA",-12.97,-38.51],["Recife, PE",-8.05,-34.88],["Fortaleza, CE",-3.73,-38.52],
+["Manaus, AM",-3.12,-60.02],["Belém, PA",-1.46,-48.50],["Goiânia, GO",-16.69,-49.26],
+["Campinas, SP",-22.91,-47.06],["Vitória, ES",-20.32,-40.34],["Natal, RN",-5.79,-35.21],
+["João Pessoa, PB",-7.12,-34.86],["Maceió, AL",-9.67,-35.74],["Cuiabá, MT",-15.60,-56.10],
+["Campo Grande, MS",-20.47,-54.62],["Teresina, PI",-5.09,-42.80],["São Luís, MA",-2.53,-44.30],
+["Aracaju, SE",-10.95,-37.07],["Santa Maria, RS",-29.68,-53.81],["Pelotas, RS",-31.77,-52.34],
+["Londrina, PR",-23.31,-51.16],["Uberlândia, MG",-18.92,-48.28],["Ribeirão Preto, SP",-21.18,-47.81],
+["Outra cidade (inserir coordenadas)","MANUAL","MANUAL"]
+];
+const OFFSET=-3;
+const $=s=>document.querySelector(s);
+const show=id=>{document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');window.scrollTo(0,0);};
+
+$('#precoLabel').textContent="R$ "+PRECO;
+$('#pixPreco').textContent=PRECO;
+const selCidade=$('#cidade');
+CIDADES.forEach((c,i)=>{const o=document.createElement('option');o.value=i;o.textContent=c[0];selCidade.appendChild(o);});
+selCidade.addEventListener('change',()=>{const c=CIDADES[selCidade.value];$('#manualCoords').classList.toggle('on',c&&c[1]==="MANUAL");});
+$('#semHora').addEventListener('change',e=>{$('#horaField').style.display=e.target.checked?'none':'block';});
+
+/* alternância cadastro/login */
+let MODE="signup";
+$('#seg').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  MODE=b.dataset.mode;
+  document.querySelectorAll('#seg button').forEach(x=>x.classList.toggle('on',x===b));
+  $('#screen-onboarding').className='screen on mode-'+MODE;
+  $('#gerar').textContent = MODE==="signup" ? "Criar conta e revelar meu céu" : "Entrar";
+});
+
+/* ============================================================
+   Cadastro / Login
+   ============================================================ */
+$('#gerar').addEventListener('click',()=> MODE==="signup" ? fazerCadastro() : fazerLogin());
+
+async function fazerCadastro(){
+  const err=$('#formErr');err.textContent='';
+  const nome=$('#nome').value.trim(), email=$('#email').value.trim(), senha=$('#senha').value;
+  const whatsapp=$('#whatsapp').value.trim(), data=$('#data').value, semHora=$('#semHora').checked, hora=$('#hora').value;
+  const ci=CIDADES[selCidade.value];
+  if(!nome){err.textContent='Me diz seu nome primeiro.';return;}
+  if(!email||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){err.textContent='Informe um e-mail válido.';return;}
+  if(!senha||senha.length<6){err.textContent='Crie uma senha de pelo menos 6 caracteres.';return;}
+  if(!data){err.textContent='Preciso da sua data de nascimento.';return;}
+  if(!ci||ci[1]==null){err.textContent='Escolha a cidade de nascimento.';return;}
+  let lat,lon;
+  if(ci[1]==="MANUAL"){lat=parseFloat($('#lat').value);lon=parseFloat($('#lon').value);if(isNaN(lat)||isNaN(lon)){err.textContent='Informe latitude e longitude.';return;}}
+  else{lat=ci[1];lon=ci[2];}
+  const hasTime=!semHora&&!!hora;
+  const [Y,Mo,D]=data.split('-').map(Number);
+  let hLocal=12; if(hasTime){const[hh,mm]=hora.split(':').map(Number);hLocal=hh+mm/60;}
+  const jd=julianDay(Y,Mo,D,hLocal-OFFSET);
+  CHART=computeChart(jd,lat,lon,hasTime);
+  DADOS={nome,email,whatsapp,data,hora,hasTime,cidade:ci[0],lat,lon};
+  UNLOCKED=false;
+
+  let msg="";
+  try{
+    const out=await apiPost("/api/signup",{nome,email,telefone:whatsapp||null,senha,
+      birth_date:data,birth_time:hasTime?hora:null,has_time:hasTime,birth_city:ci[0],lat,lon,chart_json:chartSnapshot()});
+    SESSION=out.token; LEAD_ID=out.lead_id; store.set("pac_token",SESSION);
+    msg="✓ conta criada — horóscopo semanal ativado";
+  }catch(e){
+    if(String(e.message).includes("email_ja_existe")){err.textContent='Esse e-mail já tem conta. Toque em "Entrar".';return;}
+    DEMO=true; msg="modo demonstração · backend não conectado";
+  }
+  window.__saveMsg=msg; runLoading();
+}
+
+async function fazerLogin(){
+  const err=$('#formErr');err.textContent='';
+  const email=$('#email').value.trim(), senha=$('#senha').value;
+  if(!email||!senha){err.textContent='Informe e-mail e senha.';return;}
+  try{
+    const out=await apiPost("/api/login",{email,senha});
+    SESSION=out.token; LEAD_ID=out.lead_id; store.set("pac_token",SESSION);
+    UNLOCKED=!!out.unlocked;
+    const p=out.perfil||{};
+    const hasTime=!!p.has_time;
+    const [Y,Mo,D]=p.birth_date.split('-').map(Number);
+    let hLocal=12; if(hasTime&&p.birth_time){const t=p.birth_time.split(':');hLocal=(+t[0])+(+t[1])/60;}
+    CHART=computeChart(julianDay(Y,Mo,D,hLocal-OFFSET),p.lat,p.lon,hasTime);
+    DADOS={nome:out.nome,email,hasTime,cidade:p.birth_city,lat:p.lat,lon:p.lon,data:p.birth_date,hora:p.birth_time};
+    window.__saveMsg="✓ bem-vindo de volta";
+    runLoading();
+  }catch(e){
+    err.textContent = String(e.message).includes("credenciais") ? 'E-mail ou senha incorretos.' : 'Não foi possível entrar agora.';
+  }
+}
+
+const LOADMSGS=["Localizando os planetas…","Traçando seu ascendente…","Cruzando com o céu de hoje…","Escrevendo sua leitura…"];
+function runLoading(){
+  show('#screen-loading');let i=0;$('#loadmsg').textContent=LOADMSGS[0];
+  const t=setInterval(()=>{i++;if(i<LOADMSGS.length)$('#loadmsg').textContent=LOADMSGS[i];else clearInterval(t);},900);
+  setTimeout(()=>{renderResult();},2400);
+}
+
+function renderResult(){
+  show('#screen-result');
+  $('#r-nome').textContent=DADOS.nome;
+  const ss=$('#saveState'); ss.textContent=window.__saveMsg||""; ss.classList.toggle('ok',/✓/.test(window.__saveMsg||""));
+  const bt=$('#bigthree');bt.innerHTML='';
+  const three=[["Sol",CHART.bodies.Sol],["Lua",CHART.bodies.Lua]];
+  if(CHART.hasTime)three.push(["Ascendente",{glyph:"↑",sign:signOf(CHART.asc).sign,deg:signOf(CHART.asc).deg}]);
+  three.forEach(([k,b])=>{
+    const el=document.createElement('div');el.className='lumi';
+    el.innerHTML=`<div class="k">${k}</div><div class="glyph">${b.glyph}</div><div class="v">${b.sign}</div><div class="d">${b.deg.toFixed(1)}°</div>`;
+    bt.appendChild(el);
+  });
+  drawWheel();
+  buildMapCards();
+  generateWeekly();
+  if(UNLOCKED) revelarMapas();
+}
+
+function drawWheel(){
+  const svg=$('#wheel');svg.innerHTML='';
+  const cx=170,cy=170,rOut=160,rSign=138,rInner=94,rPlanet=112;
+  const ascLon=CHART.hasTime?CHART.asc:0;
+  const NS="http://www.w3.org/2000/svg";
+  const mk=(t,at,txt)=>{const e=document.createElementNS(NS,t);for(const k in at)e.setAttribute(k,at[k]);if(txt!=null)e.textContent=txt;return e;};
+  const angle=lon=>180+(lon-ascLon);
+  const pt=(lon,r)=>{const a=angle(lon)*DEG;return[cx+r*Math.cos(a),cy-r*Math.sin(a)];};
+  const defs=mk('defs',{});
+  const filt=mk('filter',{id:'glow',x:'-50%',y:'-50%',width:'200%',height:'200%'});
+  filt.appendChild(mk('feGaussianBlur',{stdDeviation:'2.2',result:'b'}));
+  const fm=mk('feMerge',{});fm.appendChild(mk('feMergeNode',{in:'b'}));fm.appendChild(mk('feMergeNode',{in:'SourceGraphic'}));
+  filt.appendChild(fm);defs.appendChild(filt);
+  const grad=mk('radialGradient',{id:'core',cx:'50%',cy:'50%',r:'50%'});
+  grad.appendChild(mk('stop',{offset:'0%','stop-color':'#F3D68A','stop-opacity':'0.45'}));
+  grad.appendChild(mk('stop',{offset:'38%','stop-color':'#9B6EE6','stop-opacity':'0.14'}));
+  grad.appendChild(mk('stop',{offset:'100%','stop-color':'#9B6EE6','stop-opacity':'0'}));
+  defs.appendChild(grad);svg.appendChild(defs);
+  svg.appendChild(mk('circle',{cx,cy,r:rOut,fill:'url(#core)'}));
+  for(let s=0;s<12;s++){const[ex,ey]=pt(s*30,rSign);svg.appendChild(mk('line',{x1:cx,y1:cy,x2:ex,y2:ey,class:'spoke'}));}
+  svg.appendChild(mk('circle',{cx,cy,r:rOut,class:'ring'}));
+  svg.appendChild(mk('circle',{cx,cy,r:rSign,class:'ring'}));
+  svg.appendChild(mk('circle',{cx,cy,r:rInner,class:'ring',opacity:.55}));
+  for(let s=0;s<12;s++){
+    const lonB=s*30;const[bx,by]=pt(lonB,rOut);const[bi,bj]=pt(lonB,rSign);
+    svg.appendChild(mk('line',{x1:bx,y1:by,x2:bi,y2:bj,class:'tick'}));
+    const[gx,gy]=pt(lonB+15,(rOut+rSign)/2);
+    svg.appendChild(mk('text',{x:gx,y:gy+4,class:'sign-glyph','text-anchor':'middle'},SIGN_GLYPH[s]));
+  }
+  for(let d=0;d<360;d+=5){const[a1,b1]=pt(d,rSign);const[a2,b2]=pt(d,d%30===0?rSign-8:rSign-4);svg.appendChild(mk('line',{x1:a1,y1:b1,x2:a2,y2:b2,class:'tick',opacity:.4}));}
+  if(CHART.hasTime){
+    const[ax,ay]=pt(CHART.asc,rSign);const[ax2,ay2]=pt(CHART.asc+180,rSign);
+    svg.appendChild(mk('line',{x1:ax,y1:ay,x2:ax2,y2:ay2,class:'axis'}));
+    const[mx,my]=pt(CHART.mc,rSign);const[mx2,my2]=pt(CHART.mc+180,rSign);
+    svg.appendChild(mk('line',{x1:mx,y1:my,x2:mx2,y2:my2,class:'axis',opacity:.45}));
+    const[lx,ly]=pt(CHART.asc,rSign);
+    svg.appendChild(mk('text',{x:lx-2,y:ly+14,class:'sign-glyph','text-anchor':'middle'},'Asc'));
+  }
+  svg.appendChild(mk('circle',{cx,cy,r:3.2,fill:'var(--ouro)',filter:'url(#glow)'}));
+  const ty=cy-rOut-1;
+  svg.appendChild(mk('path',{d:`M ${cx} ${ty-7} L ${cx+2.6} ${ty} L ${cx+9} ${ty} L ${cx+3.4} ${ty+3.6} L ${cx+5.5} ${ty+10} L ${cx} ${ty+5.5} L ${cx-5.5} ${ty+10} L ${cx-3.4} ${ty+3.6} L ${cx-9} ${ty} L ${cx-2.6} ${ty} Z`,fill:'var(--ouro)',filter:'url(#glow)',opacity:.92}));
+  const list=Object.entries(CHART.bodies).map(([k,b])=>({k,lon:b.lon})).sort((a,b)=>a.lon-b.lon);
+  let lastA=-999;
+  list.forEach(o=>{
+    let r=rPlanet;let a=angle(o.lon);
+    if(Math.abs(a-lastA)<11)r-=20; lastA=a;
+    const[px,py]=pt(o.lon,r);const[dx,dy]=pt(o.lon,rSign-3);
+    svg.appendChild(mk('line',{x1:dx,y1:dy,x2:px,y2:py,class:'tick',opacity:.35}));
+    svg.appendChild(mk('circle',{cx:dx,cy:dy,r:2,class:'planet-dot'}));
+    svg.appendChild(mk('text',{x:px,y:py+5,class:'planet-glyph','text-anchor':'middle'},PLANET_GLYPH[o.k]));
+  });
+}
+
+/* ============================================================
+   Leitura via IA (produção: /api/reading · preview: fallback)
+   ============================================================ */
+const SYSTEM_ASTRO=`Você é uma astróloga brasileira experiente, com décadas de prática em astrologia tropical. Você lê mapas cruzando o mapa natal da pessoa com os trânsitos atuais dos planetas. Seu tom é acolhedor, maduro e específico — nunca genérico. Você SEMPRE ancora o que diz em posições e trânsitos reais fornecidos. Você fala de tendências, ciclos e orientações para reflexão — nunca faz promessas determinísticas de fatos ou datas. Escreve em português do Brasil, em prosa fluida, sem markdown, sem listas, sem títulos. REGRA DE OURO: nunca escreva algo que caberia em qualquer pessoa do mesmo signo solar; use os detalhes exclusivos do mapa (graus, casas, aspectos, retrógrados, regente, temperamento) e cite ao menos dois fatores específicos.`;
+async function askAstrologer(area,prompt){
+  try{
+    const out=await apiPost("/api/reading",{lead_id:LEAD_ID,area,prompt},true);
+    if(out&&out.content)return out.content;
+    throw new Error("sem conteúdo");
+  }catch(e){
+    // Fallback do preview (Claude.ai)
+    const res=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,system:SYSTEM_ASTRO,messages:[{role:"user",content:prompt}]})
+    });
+    const data=await res.json();
+    return (data.content||[]).filter(c=>c.type==="text").map(c=>c.text).join("\n").trim();
+  }
+}
+async function generateWeekly(){
+  const {text}=chartSummary();const el=$('#weekly');
+  try{
+    const out=await askAstrologer('weekly',`${text}\n\nEscreva o "clima astral desta semana" para ${DADOS.nome}, em no máximo 110 palavras, com base nos trânsitos de hoje sobre o mapa. Seja concreto e caloroso. Termine despertando curiosidade sobre dinheiro, relações e trabalho sem entregá-los.`);
+    el.classList.add('serif-lead');el.textContent=out||'Não consegui ler os trânsitos agora.';
+  }catch(e){el.innerHTML='<span class="err">O céu está nublado para a leitura agora.</span>';}
+}
+const AREAS=[
+  {k:'financeira',rot:'01',titulo:'Mapa Financeiro',foco:'dinheiro, ganhos, gastos, investimentos, segurança material e a relação da pessoa com o valor',glyph:'♇'},
+  {k:'relacional',rot:'02',titulo:'Mapa Relacional',foco:'amor, vínculos, parcerias, família e a vida afetiva',glyph:'♀'},
+  {k:'profissional',rot:'03',titulo:'Mapa Profissional',foco:'carreira, vocação, reconhecimento, direção profissional e timing de decisões',glyph:'♄'}
+];
+function buildMapCards(){
+  const wrap=$('#maps');wrap.innerHTML='';
+  const {transits,TG}=chartSummary();
+  AREAS.forEach(A=>{
+    const card=document.createElement('div');card.className='card map locked';card.id='map-'+A.k;
+    const rel=transits.slice(0,3).map(h=>`${PLANET_PT[h.transit]} ${h.name} ${TG(h.target)}`).join('  ·  ');
+    card.innerHTML=`
+      <div class="area-k">${A.rot} · área de vida</div>
+      <h3>${A.glyph} ${A.titulo}</h3>
+      <div class="transits">${rel}</div>
+      <div class="prose" id="prose-${A.k}"><span class="spinner"></span> leitura pronta para desbloquear…</div>
+      <div class="lockbar"><div class="lk">🔒 conteúdo completo bloqueado</div></div>`;
+    wrap.appendChild(card);
+  });
+}
+async function revelarMapas(){
+  $('#paywall').style.display='none';
+  const {text}=chartSummary();
+  document.querySelectorAll('.map').forEach(m=>m.classList.remove('locked'));
+  await Promise.all(AREAS.map(async A=>{
+    const el=$('#prose-'+A.k);
+    try{
+      const out=await askAstrologer(A.k,`${text}\n\nEscreva o ${A.titulo} de ${DADOS.nome}: leitura profunda sobre ${A.foco}. Entre 170 e 210 palavras. Cruze explicitamente 2 ou 3 posições natais com trânsitos atuais reais. Aponte o ciclo do momento, um ponto de atenção e uma orientação prática. Sem promessas de fatos ou datas.`);
+      el.classList.add('serif-lead');el.textContent=out||'Leitura indisponível.';
+    }catch(e){el.innerHTML='<span class="err">Não consegui completar esta leitura agora.</span>';}
+  }));
+}
+
+/* ============================================================
+   PIX (Mercado Pago) — abre modal, faz polling, libera
+   ============================================================ */
+let POLL=null;
+$('#desbloquear').addEventListener('click',async()=>{
+  const btn=$('#desbloquear');btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Gerando PIX…';
+  try{
+    const out=await apiPost("/api/checkout",{lead_id:LEAD_ID,email:DADOS.email,nome:DADOS.nome},true);
+    if(!out.copia_cola&&!out.qr_base64)throw new Error("sem qr");
+    btn.disabled=false;btn.textContent='Desbloquear com PIX';
+    abrirPix(out);
+  }catch(e){
+    // Preview / sem backend: desbloqueio simulado
+    btn.innerHTML='<span class="spinner"></span> Processando (demo)…';
+    await new Promise(r=>setTimeout(r,900));
+    UNLOCKED=true; await revelarMapas();
+    btn.disabled=false;btn.textContent='Desbloquear com PIX';
+  }
+});
+function abrirPix(pix){
+  const m=$('#pixModal');
+  const q=$('#pixQr');
+  if(pix.qr_base64){q.src="data:image/png;base64,"+pix.qr_base64;q.style.display="block";}else{q.style.display="none";}
+  $('#pixCopia').value=pix.copia_cola||"";
+  $('#pixStatus').textContent="Aguardando pagamento…";
+  m.classList.add('on');
+  clearInterval(POLL);
+  POLL=setInterval(async()=>{
+    try{
+      const s=await apiGet("/api/payment-status?payment_id="+encodeURIComponent(pix.payment_id));
+      if(s.status==="approved"){
+        clearInterval(POLL);$('#pixStatus').textContent="Pagamento aprovado ✓";
+        UNLOCKED=true;setTimeout(async()=>{fecharPix();await revelarMapas();},700);
+      }else if(s.status==="rejected"||s.status==="cancelled"){
+        clearInterval(POLL);$('#pixStatus').innerHTML='<span class="err">Pagamento não concluído. Tente de novo.</span>';
+      }
+    }catch(e){}
+  },4000);
+}
+function fecharPix(){$('#pixModal').classList.remove('on');clearInterval(POLL);}
+$('#pixClose').addEventListener('click',fecharPix);
+$('#pixCopyBtn').addEventListener('click',()=>{const t=$('#pixCopia');t.select();try{document.execCommand('copy');$('#pixCopyBtn').textContent='Copiado!';setTimeout(()=>$('#pixCopyBtn').textContent='Copiar código',1500);}catch(e){}});
+
+$('#logout').addEventListener('click',()=>{
+  SESSION=null;store.del("pac_token");CHART=null;DADOS=null;LEAD_ID=null;UNLOCKED=false;
+  $('#paywall').style.display='block';
+  document.querySelectorAll('.map').forEach(m=>m.classList.add('locked'));
+  show('#screen-onboarding');
+});
+
+/* service worker (PWA) */
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));}
+</script>
+</body>
+</html>

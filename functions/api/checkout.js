@@ -8,7 +8,7 @@ export async function onRequestPost({ request, env }) {
     const b = await request.json();
     if (!b.lead_id || !b.email) return json({ error: "dados incompletos" }, 400);
 
-    const amount = Number(env.PRECO || 47);
+    const amount = Number(env.PRECO || 19,90);
     const origin = new URL(request.url).origin;
     const nome = (b.nome || "Cliente").trim();
     const [first, ...rest] = nome.split(" ");

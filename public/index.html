@@ -250,7 +250,7 @@
 
     <div class="card paywall" id="paywall">
       <div class="eyebrow" style="justify-content:center">Desbloquear tudo</div>
-      <div class="price" style="margin-top:12px"><span id="precoLabel">R$ 47</span><small> / pagamento único</small></div>
+      <div class="price" style="margin-top:12px"><span id="precoLabel">R$ 19,90</span><small> / pagamento único</small></div>
       <ul>
         <li>Mapa Financeiro completo — ciclos de ganho, cautela e investimento</li>
         <li>Mapa Relacional completo — afetos, vínculos e o que os trânsitos pedem</li>
@@ -287,7 +287,8 @@
    automaticamente num modo de demonstração.
    ============================================================ */
 const API_BASE = "";
-const PRECO    = 47;
+const PRECO    = 19.90;
+const fmtBRL   = v => v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); // 19,90
 
 /* ============================================================
    MOTOR ASTROLÓGICO — validado contra efemérides reais
@@ -477,8 +478,8 @@ const OFFSET=-3;
 const $=s=>document.querySelector(s);
 const show=id=>{document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');window.scrollTo(0,0);};
 
-$('#precoLabel').textContent="R$ "+PRECO;
-$('#pixPreco').textContent=PRECO;
+$('#precoLabel').textContent="R$ "+fmtBRL(PRECO);
+$('#pixPreco').textContent=fmtBRL(PRECO);
 const selCidade=$('#cidade');
 CIDADES.forEach((c,i)=>{const o=document.createElement('option');o.value=i;o.textContent=c[0];selCidade.appendChild(o);});
 selCidade.addEventListener('change',()=>{const c=CIDADES[selCidade.value];$('#manualCoords').classList.toggle('on',c&&c[1]==="MANUAL");});

@@ -486,25 +486,52 @@ function chartSnapshot(){
   out.snapshotAt=new Date().toISOString();
   return out;
 }
-/* ---- Rituais do dia (regente do dia + Lua atual) ---- */
+/* ---- Rituais do dia — personalizados pelo elemento do mapa + rotação diária ---- */
+const RIT_EL={
+  'Fogo':{cores:[['Vermelho','#C0392B'],['Laranja','#E67E22'],['Dourado','#E4B44C'],['Coral','#E76F51']],
+    cristais:['Cornalina','Olho de Tigre','Citrino','Granada'],
+    banhos:['Canela com laranja','Gengibre com alecrim','Cravo e louro','Alecrim com mel'],
+    focos:['Coragem','Ação','Vitalidade','Paixão'],
+    mantras:['Tenho força para começar o que preciso.','Minha energia abre caminhos hoje.','Ajo com coragem e confiança.','Eu brilho sem pedir licença.']},
+  'Terra':{cores:[['Verde','#3F9E7A'],['Marrom','#8B5A2B'],['Bege','#C9B18C'],['Verde-musgo','#4E6B4E']],
+    cristais:['Quartzo Verde','Ônix','Turmalina Negra','Jaspe'],
+    banhos:['Alecrim com sal grosso','Folhas verdes e hortelã','Arruda com sal','Camomila com mel'],
+    focos:['Estabilidade','Foco','Prosperidade','Presença'],
+    mantras:['Construo minha segurança com calma.','Hoje cuido do que é concreto.','Mereço abundância e conforto.','Estou firme e presente.']},
+  'Ar':{cores:[['Amarelo','#EBC94A'],['Azul-claro','#7FB3D5'],['Lilás','#B39DDB'],['Branco','#ECECEC']],
+    cristais:['Ágata','Ametista','Fluorita','Citrino'],
+    banhos:['Hortelã com alecrim','Lavanda','Camomila e erva-doce','Capim-limão'],
+    focos:['Comunicação','Clareza','Ideias','Leveza'],
+    mantras:['Minhas palavras fluem com clareza.','Minha mente está leve e aberta.','Conecto-me com facilidade hoje.','Deixo as ideias circularem.']},
+  'Água':{cores:[['Azul','#2E6EB5'],['Prata','#C9CDD6'],['Verde-água','#6FBFB0'],['Lilás','#9B8FC7']],
+    cristais:['Pedra da Lua','Água-marinha','Quartzo Rosa','Ametista'],
+    banhos:['Camomila com sal','Pétalas de rosa','Alfazema','Erva-cidreira'],
+    focos:['Emoção','Intuição','Cura','Afeto'],
+    mantras:['Acolho o que sinto com gentileza.','Confio na minha intuição hoje.','Cuido do meu coração.','Deixo fluir o que precisa passar.']}
+};
 function ritualsToday(){
-  const dow=new Date().getDay(); // 0=Dom ... 6=Sáb
+  const dow=new Date().getDay();
   const REG=['Sol','Lua','Marte','Mercurio','Jupiter','Venus','Saturno'][dow];
-  const DATA={
-    Sol:{cor:'Dourado',hex:'#E4B44C',cristal:'Citrino ou Olho de Tigre',banho:'Laranja com canela',foco:'Vitalidade',mantra:'Hoje eu brilho com confiança e ocupo o meu lugar.'},
-    Lua:{cor:'Branco ou Prata',hex:'#E8ECF5',cristal:'Pedra da Lua ou Pérola',banho:'Camomila com sal grosso',foco:'Emoções',mantra:'Acolho o que sinto e confio na minha intuição.'},
-    Marte:{cor:'Vermelho',hex:'#C0392B',cristal:'Cornalina ou Hematita',banho:'Gengibre com alecrim',foco:'Coragem',mantra:'Tenho coragem para agir e defender o que é meu.'},
-    Mercurio:{cor:'Amarelo',hex:'#EBC94A',cristal:'Ágata ou Citrino',banho:'Hortelã com alecrim',foco:'Comunicação',mantra:'Minha mente está clara e me comunico com verdade.'},
-    Jupiter:{cor:'Azul ou Roxo',hex:'#5B6ED8',cristal:'Ametista ou Lápis-lázuli',banho:'Sálvia com louro',foco:'Expansão',mantra:'Estou aberto às oportunidades e à abundância.'},
-    Venus:{cor:'Verde ou Rosa',hex:'#3F9E7A',cristal:'Quartzo Rosa ou Esmeralda',banho:'Pétalas de rosa e jasmim',foco:'Amor',mantra:'Atraio amor, beleza e harmonia para a minha vida.'},
-    Saturno:{cor:'Preto ou Marrom',hex:'#3A3550',cristal:'Turmalina Negra ou Ônix',banho:'Arruda com sal grosso',foco:'Disciplina',mantra:'Sou firme, organizo minha vida e cuido do que importa.'}
-  };
   const dia=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'][dow];
-  return {...DATA[REG], regente:PLANET_PT[REG], dia};
+  const x=CHART?chartExtras():null;
+  let elemento='Fogo', seed=0;
+  if(CHART){
+    elemento=Object.entries(x.el).sort((a,b)=>b[1]-a[1])[0][0];
+    const b=CHART.bodies;
+    seed=Math.floor(b.Sol.lon+b.Lua.lon+(CHART.hasTime?CHART.asc:0));
+  }
+  const pool=RIT_EL[elemento]||RIT_EL['Fogo'];
+  const now=new Date(), start=new Date(now.getFullYear(),0,0);
+  const doy=Math.floor((now-start)/86400000);
+  const pick=(arr,off)=>arr[((doy+seed+off)%arr.length+arr.length)%arr.length];
+  const cor=pick(pool.cores,0);
+  return {elemento, cor:cor[0], hex:cor[1], cristal:pick(pool.cristais,1), banho:pick(pool.banhos,2),
+    foco:pick(pool.focos,0), mantra:pick(pool.mantras,3),
+    regente:PLANET_PT[REG], dia, phase:x?x.phase:null, moonSign:x?x.moonSign:null};
 }
 function renderRituais(){
-  const r=ritualsToday(), x=CHART?chartExtras():null;
-  $('#ritSub').textContent=`${r.dia.charAt(0).toUpperCase()+r.dia.slice(1)} é o dia de ${r.regente}${x?` — ${x.phase}, com a Lua em ${x.moonSign}`:''}.`;
+  const r=ritualsToday();
+  $('#ritSub').textContent=`${r.dia.charAt(0).toUpperCase()+r.dia.slice(1)} traz a energia de ${r.regente}. Rituais afinados ao seu elemento ${r.elemento}${r.moonSign?`, com a Lua em ${r.moonSign}`:''}.`;
   const grid=$('#ritGrid');grid.innerHTML='';
   [
     {sw:r.hex,k:'Cor do dia',v:r.cor},

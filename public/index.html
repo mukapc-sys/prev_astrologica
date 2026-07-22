@@ -935,6 +935,32 @@ $('#btnPush')&&$('#btnPush').addEventListener('click',async()=>{
   }catch(e){console.warn(e);bp.textContent='não foi possível ativar';}
 });
 function urlB64ToU8(b64){const pad='='.repeat((4-b64.length%4)%4);const s=(b64+pad).replace(/-/g,'+').replace(/_/g,'/');const raw=atob(s);return Uint8Array.from([...raw].map(c=>c.charCodeAt(0)));}
+
+/* ============================================================
+   Auto-login: se há sessão salva no aparelho, entra direto
+   ============================================================ */
+async function autoLogin(){
+  if(!SESSION) return;
+  show('#screen-loading'); $('#loadmsg').textContent='Entrando…';
+  try{
+    const out=await apiGet("/api/me");
+    if(out.token){SESSION=out.token;store.set("pac_token",SESSION);}   // renova a sessão
+    LEAD_ID=out.lead_id; UNLOCKED=!!out.unlocked;
+    const p=out.perfil||{};
+    const hasTime=!!p.has_time;
+    const [Y,Mo,D]=p.birth_date.split('-').map(Number);
+    let hLocal=12; if(hasTime&&p.birth_time){const t=p.birth_time.split(':');hLocal=(+t[0])+(+t[1])/60;}
+    CHART=computeChart(julianDay(Y,Mo,D,hLocal-OFFSET),p.lat,p.lon,hasTime);
+    DADOS={nome:out.nome,email:'',hasTime,cidade:p.birth_city,lat:p.lat,lon:p.lon,data:p.birth_date,hora:p.birth_time};
+    window.__saveMsg='';
+    renderResult();
+  }catch(e){
+    const m=String(e.message||'');
+    if(m.includes('no_session')||m.includes('401')){SESSION=null;store.del('pac_token');}
+    show('#screen-onboarding');
+  }
+}
+autoLogin();
 </script>
 </body>
 </html>

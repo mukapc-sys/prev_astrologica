@@ -17,7 +17,7 @@ export async function verifyPassword(password, saltHex, hashHex) {
 }
 
 export async function makeToken(env, uid) {
-  const exp = Date.now() + 1000 * 60 * 60 * 24 * 30; // 30 dias
+  const exp = Date.now() + 1000 * 60 * 60 * 24 * 180; // 180 dias (renovado a cada abertura)
   const payload = `${uid}.${exp}`;
   const sig = await hmac(env.SESSION_SECRET, payload);
   return btoa(payload) + "." + sig;

@@ -55,3 +55,25 @@ CREATE TABLE IF NOT EXISTS readings (
   created_at TEXT DEFAULT (datetime('now'))
 );
 CREATE INDEX IF NOT EXISTS idx_readings_lead ON readings(lead_id);
+
+-- Inscrições de push (aparelhos que aceitaram notificações)
+CREATE TABLE IF NOT EXISTS push_subs (
+  id TEXT PRIMARY KEY,
+  lead_id TEXT,
+  endpoint TEXT UNIQUE,
+  p256dh TEXT,
+  auth TEXT,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_push_lead ON push_subs(lead_id);
+
+-- Horóscopo semanal (1 por lead por semana; week_start = domingo)
+CREATE TABLE IF NOT EXISTS horoscopes (
+  id TEXT PRIMARY KEY,
+  lead_id TEXT NOT NULL,
+  week_start TEXT NOT NULL,
+  content TEXT NOT NULL,
+  created_at TEXT DEFAULT (datetime('now')),
+  UNIQUE(lead_id, week_start)
+);
+CREATE INDEX IF NOT EXISTS idx_horo_lead ON horoscopes(lead_id);

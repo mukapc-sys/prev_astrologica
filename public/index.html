@@ -591,20 +591,34 @@ function acRender(items){
   });
   acList.classList.add('on');
 }
+function ehBrasil(p){ return p && (p.countrycode==='BR' || p.countrycode==='br' || /brasil|brazil/i.test(p.country||'')); }
+function dedup(items){ const seen=new Set(); return items.filter(it=>{ if(!it.nome||isNaN(it.lat))return false; const k=it.label.toLowerCase(); if(seen.has(k))return false; seen.add(k); return true; }); }
 async function acSearch(q){
   try{
-    const url=`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lang=pt&limit=6&lat=-14.2&lon=-51.9&osm_tag=place`;
-    const r=await fetch(url);const data=await r.json();
-    const tipos=['city','town','village','municipality','hamlet'];
-    let feats=(data.features||[]).filter(f=>f.properties.countrycode==='BR' && tipos.includes(f.properties.osm_value));
-    if(!feats.length)feats=(data.features||[]).filter(f=>f.properties.countrycode==='BR');
-    const items=feats.map(f=>{
-      const p=f.properties,c=f.geometry.coordinates;
-      const uf=p.state||'';
-      return {nome:p.name,detalhe:uf,label:uf?`${p.name}, ${uf}`:p.name,lat:c[1],lon:c[0]};
-    });
-    acRender(items);
-  }catch(e){acList.innerHTML='<div class="ac-msg">Busca indisponível — use as coordenadas manuais.</div>';acList.classList.add('on');}
+    const url=`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lang=pt&limit=8&lat=-14.2&lon=-51.9`;
+    const r=await fetch(url); const data=await r.json();
+    const items=dedup((data.features||[]).filter(f=>ehBrasil(f.properties)).map(f=>{
+      const p=f.properties,c=f.geometry.coordinates,uf=p.state||'';
+      const nome=p.name||p.city||'';
+      return {nome,detalhe:uf,label:uf?`${nome}, ${uf}`:nome,lat:c[1],lon:c[0]};
+    }));
+    if(items.length){acRender(items);return;}
+    await acSearchNominatim(q);
+  }catch(e){ await acSearchNominatim(q); }
+}
+async function acSearchNominatim(q){
+  try{
+    const url=`https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(q)}&countrycodes=br&format=json&addressdetails=1&limit=8&accept-language=pt-BR`;
+    const r=await fetch(url); const arr=await r.json();
+    const items=dedup((arr||[]).map(o=>{
+      const a=o.address||{};
+      const nome=a.city||a.town||a.village||a.municipality||(o.display_name||'').split(',')[0];
+      const uf=a.state||'';
+      return {nome,detalhe:uf,label:uf?`${nome}, ${uf}`:nome,lat:parseFloat(o.lat),lon:parseFloat(o.lon)};
+    }));
+    if(items.length){acRender(items);return;}
+    acList.innerHTML='<div class="ac-msg">Nenhuma cidade encontrada. Tente o nome completo ou toque em “inserir coordenadas”.</div>';acList.classList.add('on');
+  }catch(e){acList.innerHTML='<div class="ac-msg">Busca indisponível — toque em “inserir coordenadas”.</div>';acList.classList.add('on');}
 }
 acInput.addEventListener('input',()=>{
   CIDADE_SEL=null;$('#cidadeHint').textContent='Comece a digitar o nome e escolha na lista.';

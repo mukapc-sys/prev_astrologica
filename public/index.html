@@ -8,20 +8,20 @@
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
     --noite:#0C0A1F; --camada:#171233; --camada2:#20184A;
     --ouro:#F3D68A; --ouro-forte:#E4B44C; --prata:#B9B4E0;
     --violeta:#6B4CC4; --magenta:#B268C8; --vinho:#7A2E5A; --osso:#F1EEF7; --mudo:#9A93C0;
     --linha:rgba(243,214,138,.22); --glow:rgba(243,214,138,.55);
-    --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
-    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    --mono:"Space Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+    --serif:"Fraunces",Georgia,"Times New Roman",serif;
+    --sans:"Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    --mono:"Roboto Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
   }
-  *{margin:0;padding:0;box-sizing:border-box}
+  *{margin:0;padding:0;box-sizing:border-box;font-variant-numeric:tabular-nums lining-nums}
   html,body{height:100%}
-  body{background:var(--noite); color:var(--osso); font-family:var(--sans); -webkit-font-smoothing:antialiased; overflow-x:hidden; line-height:1.55;}
+  body{background:var(--noite); color:var(--osso); font-family:var(--sans); font-size:17px; -webkit-font-smoothing:antialiased; overflow-x:hidden; line-height:1.6;}
   .ceu{position:fixed; inset:0; z-index:0; overflow:hidden;
     background:
       radial-gradient(85% 65% at 80% 10%, rgba(178,104,200,.34) 0%, transparent 55%),
@@ -72,7 +72,7 @@
   @keyframes emGlow{0%,100%{text-shadow:0 0 22px rgba(243,214,138,.35)}50%{text-shadow:0 0 42px rgba(243,214,138,.72)}}
   @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
   @media (prefers-reduced-motion:reduce){
-    .ceu::before,.ceu::after,.twinkle,.shoot,#wheel,.wheel-core,.wheel-star,h1 em,#desbloquear{animation:none}
+    .ceu::before,.ceu::after,.twinkle,.shoot,#wheel,.wheel-core,.wheel-star,.wheel-spin,.wheel-spin-rev,h1 em,#desbloquear{animation:none}
   }
 
   .app{position:relative; z-index:1; max-width:480px; margin:0 auto; min-height:100dvh;
@@ -85,7 +85,7 @@
   .eyebrow::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--linha),transparent)}
   h1{font-family:var(--serif); font-weight:500; line-height:1.02; letter-spacing:.4px; font-size:clamp(38px,11vw,52px); margin:18px 0 8px}
   h1 em{font-style:italic; color:var(--ouro); text-shadow:0 0 28px rgba(243,214,138,.5); animation:emGlow 4.5s ease-in-out infinite}
-  .lede{color:var(--mudo); font-size:15.5px; max-width:38ch}
+  .lede{color:var(--mudo); font-size:17.5px; max-width:38ch}
 
   .card{background:linear-gradient(180deg,rgba(40,29,78,.62),rgba(24,17,50,.72)); border:1px solid var(--linha); border-radius:18px; padding:20px; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); box-shadow:0 12px 44px rgba(10,6,30,.5), inset 0 1px 0 rgba(255,255,255,.04)}
 
@@ -95,7 +95,7 @@
 
   .form{margin-top:16px; display:grid; gap:16px}
   label{display:block; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--prata); margin-bottom:7px; font-weight:500}
-  .field input,.field select{width:100%; background:rgba(11,10,31,.6); color:var(--osso); border:1px solid rgba(185,180,224,.24); border-radius:12px; padding:14px 14px; font-family:var(--sans); font-size:16px; outline:none; transition:border-color .2s, box-shadow .2s}
+  .field input,.field select{width:100%; background:rgba(11,10,31,.6); color:var(--osso); border:1px solid rgba(185,180,224,.24); border-radius:12px; padding:15px 14px; font-family:var(--sans); font-size:16.5px; outline:none; transition:border-color .2s, box-shadow .2s}
   .field input:focus,.field select:focus{border-color:var(--ouro); box-shadow:0 0 0 3px rgba(243,214,138,.14)}
   select{appearance:none; background-image:linear-gradient(45deg,transparent 50%,var(--ouro) 50%),linear-gradient(135deg,var(--ouro) 50%,transparent 50%); background-position:calc(100% - 18px) 22px,calc(100% - 12px) 22px; background-size:6px 6px,6px 6px; background-repeat:no-repeat}
   .check{display:flex; align-items:center; gap:10px; color:var(--mudo); font-size:13.5px; cursor:pointer; user-select:none}
@@ -114,7 +114,7 @@
   .only-signup{display:block}
   .mode-login .only-signup{display:none}
 
-  .btn{width:100%; border:none; cursor:pointer; font-family:var(--sans); font-weight:600; font-size:16px; letter-spacing:.02em; padding:16px; border-radius:12px; background:linear-gradient(180deg,var(--ouro),var(--ouro-forte)); color:#20170a; box-shadow:0 8px 24px rgba(201,162,39,.28); transition:transform .15s, box-shadow .15s}
+  .btn{width:100%; border:none; cursor:pointer; font-family:var(--sans); font-weight:600; font-size:17px; letter-spacing:.02em; padding:16px; border-radius:12px; background:linear-gradient(180deg,var(--ouro),var(--ouro-forte)); color:#20170a; box-shadow:0 8px 24px rgba(201,162,39,.28); transition:transform .15s, box-shadow .15s}
   .btn:hover{transform:translateY(-1px); box-shadow:0 12px 30px rgba(201,162,39,.36)}
   .btn:active{transform:translateY(0)}
   .btn.ghost{background:transparent;color:var(--ouro);border:1px solid var(--linha);box-shadow:none}
@@ -129,10 +129,10 @@
   .ident .nome{font-family:var(--serif);font-size:30px;font-weight:500}
   .bigthree{display:flex;justify-content:center;gap:10px;margin:16px 0 6px;flex-wrap:wrap}
   .lumi{background:rgba(11,10,31,.5);border:1px solid var(--linha);border-radius:12px;padding:10px 12px;min-width:96px;text-align:center}
-  .lumi .k{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--mudo)}
+  .lumi .k{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mudo)}
   .lumi .glyph{font-size:20px;color:var(--ouro);line-height:1.1;margin:3px 0}
-  .lumi .v{font-family:var(--serif);font-size:17px}
-  .lumi .d{font-family:var(--mono);font-size:10.5px;color:var(--prata)}
+  .lumi .v{font-family:var(--serif);font-size:20px}
+  .lumi .d{font-family:var(--mono);font-size:13px;color:var(--prata)}
 
   .wheelwrap{display:flex;justify-content:center;margin:14px 0 6px}
   #wheel{width:min(340px,86vw);height:min(340px,86vw);animation:floaty 7s ease-in-out infinite}
@@ -148,17 +148,31 @@
   .axis{stroke:var(--ouro);stroke-width:1.2;opacity:.75;filter:url(#glow)}
   .spoke{stroke:var(--ouro-forte);stroke-opacity:.18}
 
-  .sec-title{font-family:var(--serif);font-size:24px;font-weight:500;margin:26px 0 4px;display:flex;align-items:baseline;gap:10px}
+  .sec-title{font-family:var(--serif);font-size:28px;font-weight:500;margin:26px 0 4px;display:flex;align-items:baseline;gap:10px}
   .sec-title .idx{font-family:var(--mono);font-size:12px;color:var(--ouro)}
   .weekly{margin-top:10px}
-  .prose{color:#dcdae6;font-size:15px;white-space:pre-wrap}
+  .prose{color:#e8e6f0;font-size:18px;line-height:1.62;white-space:pre-wrap}
   .prose.serif-lead::first-letter{font-family:var(--serif);font-size:40px;float:left;line-height:.8;padding:6px 8px 0 0;color:var(--ouro)}
+  .rituais{margin-top:16px}
+  .ritSub{font-size:14.5px;color:var(--mudo);margin:2px 0 14px}
+  .ritGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .ritItem{background:rgba(11,10,31,.5);border:1px solid var(--linha);border-radius:14px;padding:14px;display:flex;gap:12px;align-items:center}
+  .ritIcon{width:36px;height:36px;border-radius:10px;flex:0 0 36px;display:flex;align-items:center;justify-content:center;font-size:19px;background:rgba(243,214,138,.12)}
+  .ritSwatch{width:36px;height:36px;border-radius:10px;flex:0 0 36px;border:1px solid rgba(255,255,255,.3)}
+  .ritTxt .rk{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mudo)}
+  .ritTxt .rv{font-size:16px;font-weight:600;color:var(--osso);margin-top:2px;line-height:1.25}
+  .ritMantra{margin-top:15px;font-family:var(--serif);font-size:19px;font-style:italic;color:var(--ouro);text-align:center;line-height:1.42}
+  .isca{color:var(--ouro);font-size:16.5px;line-height:1.5;margin:6px 0 12px;font-weight:500}
+  .blurfill{filter:blur(6px);opacity:.42;max-height:116px;overflow:hidden;pointer-events:none;user-select:none;color:#e8e6f0;font-size:18px;line-height:1.62}
+  .wheel-spin{transform-box:fill-box;transform-origin:center;animation:spinSlow 90s linear infinite}
+  .wheel-spin-rev{transform-box:fill-box;transform-origin:center;animation:spinSlow 120s linear infinite reverse}
+  @keyframes spinSlow{to{transform:rotate(360deg)}}
 
   .maps{display:grid;gap:16px;margin-top:14px}
   .map{position:relative;overflow:hidden}
-  .map h3{font-family:var(--serif);font-size:22px;font-weight:500;margin-bottom:2px}
+  .map h3{font-family:var(--serif);font-size:25px;font-weight:500;margin-bottom:2px}
   .map .area-k{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--prata)}
-  .map .transits{font-family:var(--mono);font-size:11px;color:var(--ouro);opacity:.85;margin:8px 0 12px;line-height:1.7}
+  .map .transits{font-family:var(--mono);font-size:12.5px;color:var(--ouro);opacity:.85;margin:8px 0 12px;line-height:1.7}
   .locked .prose{filter:blur(6px);opacity:.5;pointer-events:none;user-select:none;max-height:120px;overflow:hidden}
   .lockbar{position:absolute;inset:auto 0 0 0;padding:22px 18px 18px;background:linear-gradient(180deg,transparent,rgba(24,17,50,.96)46%);text-align:center;display:none}
   .locked .lockbar{display:block}
@@ -168,7 +182,7 @@
   .paywall .price{font-family:var(--serif);font-size:44px;color:var(--ouro);line-height:1}
   .paywall .price small{font-size:15px;color:var(--mudo);font-family:var(--sans)}
   .paywall ul{list-style:none;margin:16px 0;display:grid;gap:8px;text-align:left}
-  .paywall li{font-size:14px;color:#dcdae6;display:flex;gap:9px;align-items:flex-start}
+  .paywall li{font-size:16px;color:#dcdae6;display:flex;gap:9px;align-items:flex-start}
   .paywall li::before{content:"✦";color:var(--ouro)}
   .secure{font-size:11.5px;color:var(--mudo);margin-top:10px;font-family:var(--mono);letter-spacing:.08em}
 
@@ -278,12 +292,19 @@
     <div class="wheelwrap"><svg id="wheel" viewBox="0 0 340 340" aria-label="Roda do céu"></svg></div>
 
     <div class="card weekly">
-      <div class="sec-title"><span class="idx">☀</span> Clima astral desta semana</div>
-      <div class="prose" id="weekly"><span class="spinner"></span> lendo os trânsitos de hoje…</div>
+      <div class="sec-title"><span class="idx">☀</span> Seu Horóscopo da Semana</div>
+      <div class="prose" id="weekly"><span class="spinner"></span> lendo os astros de hoje…</div>
     </div>
 
-    <div class="sec-title" style="margin-top:30px">A previsão completa</div>
-    <p class="lede" style="font-size:14px">Três mapas profundos, cada um cruzando seus planetas natais com os astros de agora.</p>
+    <div class="card rituais">
+      <div class="sec-title"><span class="idx">✧</span> Rituais de Hoje</div>
+      <div class="ritSub" id="ritSub"></div>
+      <div class="ritGrid" id="ritGrid"></div>
+      <div class="ritMantra" id="ritMantra"></div>
+    </div>
+
+    <div class="sec-title" style="margin-top:30px">Sua Previsão Completa</div>
+    <p class="lede" style="font-size:16px">Três leituras profundas, feitas sob medida para o seu mapa: o que os astros preparam para o seu dinheiro, seus amores e seu trabalho.</p>
 
     <div class="maps" id="maps"></div>
 
@@ -452,6 +473,39 @@ function chartSnapshot(){
   out.snapshotAt=new Date().toISOString();
   return out;
 }
+/* ---- Rituais do dia (regente do dia + Lua atual) ---- */
+function ritualsToday(){
+  const dow=new Date().getDay(); // 0=Dom ... 6=Sáb
+  const REG=['Sol','Lua','Marte','Mercurio','Jupiter','Venus','Saturno'][dow];
+  const DATA={
+    Sol:{cor:'Dourado',hex:'#E4B44C',cristal:'Citrino ou Olho de Tigre',banho:'Laranja com canela',foco:'Vitalidade',mantra:'Hoje eu brilho com confiança e ocupo o meu lugar.'},
+    Lua:{cor:'Branco ou Prata',hex:'#E8ECF5',cristal:'Pedra da Lua ou Pérola',banho:'Camomila com sal grosso',foco:'Emoções',mantra:'Acolho o que sinto e confio na minha intuição.'},
+    Marte:{cor:'Vermelho',hex:'#C0392B',cristal:'Cornalina ou Hematita',banho:'Gengibre com alecrim',foco:'Coragem',mantra:'Tenho coragem para agir e defender o que é meu.'},
+    Mercurio:{cor:'Amarelo',hex:'#EBC94A',cristal:'Ágata ou Citrino',banho:'Hortelã com alecrim',foco:'Comunicação',mantra:'Minha mente está clara e me comunico com verdade.'},
+    Jupiter:{cor:'Azul ou Roxo',hex:'#5B6ED8',cristal:'Ametista ou Lápis-lázuli',banho:'Sálvia com louro',foco:'Expansão',mantra:'Estou aberto às oportunidades e à abundância.'},
+    Venus:{cor:'Verde ou Rosa',hex:'#3F9E7A',cristal:'Quartzo Rosa ou Esmeralda',banho:'Pétalas de rosa e jasmim',foco:'Amor',mantra:'Atraio amor, beleza e harmonia para a minha vida.'},
+    Saturno:{cor:'Preto ou Marrom',hex:'#3A3550',cristal:'Turmalina Negra ou Ônix',banho:'Arruda com sal grosso',foco:'Disciplina',mantra:'Sou firme, organizo minha vida e cuido do que importa.'}
+  };
+  const dia=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'][dow];
+  return {...DATA[REG], regente:PLANET_PT[REG], dia};
+}
+function renderRituais(){
+  const r=ritualsToday(), x=CHART?chartExtras():null;
+  $('#ritSub').textContent=`${r.dia.charAt(0).toUpperCase()+r.dia.slice(1)} é o dia de ${r.regente}${x?` — ${x.phase}, com a Lua em ${x.moonSign}`:''}.`;
+  const grid=$('#ritGrid');grid.innerHTML='';
+  [
+    {sw:r.hex,k:'Cor do dia',v:r.cor},
+    {ic:'💎',k:'Cristal',v:r.cristal},
+    {ic:'🛁',k:'Banho de hoje',v:r.banho},
+    {ic:'✦',k:'Foco do dia',v:r.foco}
+  ].forEach(it=>{
+    const el=document.createElement('div');el.className='ritItem';
+    const icon=it.sw?`<div class="ritSwatch" style="background:${it.sw}"></div>`:`<div class="ritIcon">${it.ic}</div>`;
+    el.innerHTML=`${icon}<div class="ritTxt"><div class="rk">${it.k}</div><div class="rv">${it.v}</div></div>`;
+    grid.appendChild(el);
+  });
+  $('#ritMantra').textContent='“'+r.mantra+'”';
+}
 function chartSummary(){
   const b=CHART.bodies;
   let s=`DADOS: ${DADOS.nome}, nascido(a) em ${DADOS.cidade}.\nMAPA NATAL:\n`;
@@ -462,7 +516,7 @@ function chartSummary(){
   const tr=currentTransits(CHART);const top=tr.hits.slice(0,7);
   const TG=t=>t==='Ascendente'?'Ascendente':t==='MeioCeu'?'Meio-Céu':PLANET_PT[t]||t;
   s+=`TRÂNSITOS DE HOJE (${new Date().toLocaleDateString('pt-BR')}) sobre o mapa:\n`;
-  top.forEach(h=>s+=`- ${PLANET_PT[h.transit]} em trânsito faz ${h.name} ao seu ${TG(h.target)} natal (orbe ${h.orb}°)${h.slow?' [ciclo longo]':''}\n`);
+  top.forEach(h=>s+=`- ${PLANET_PT[h.transit]} em trânsito faz ${h.name} sobre ${TG(h.target)} natal (orbe ${h.orb}°)${h.slow?' [ciclo longo]':''}\n`);
   const x=chartExtras();
   s+=`TEMPERAMENTO: elementos — ${Object.entries(x.el).map(([k,v])=>k+' '+v).join(', ')}; modalidades — ${Object.entries(x.md).map(([k,v])=>k+' '+v).join(', ')}.\n`;
   s+= x.retros.length ? `RETRÓGRADOS natais: ${x.retros.join(', ')}.\n` : `Sem planetas retrógrados no mapa natal.\n`;
@@ -640,6 +694,7 @@ function renderResult(){
   });
   drawWheel();
   buildMapCards();
+  renderRituais();
   generateWeekly();
   if(UNLOCKED) revelarMapas();
 }
@@ -667,6 +722,8 @@ function drawWheel(){
   svg.appendChild(mk('circle',{cx,cy,r:rOut,class:'ring'}));
   svg.appendChild(mk('circle',{cx,cy,r:rSign,class:'ring'}));
   svg.appendChild(mk('circle',{cx,cy,r:rInner,class:'ring',opacity:.55}));
+  svg.appendChild(mk('circle',{cx,cy,r:rOut-7,fill:'none',stroke:'var(--ouro-forte)','stroke-opacity':'0.42','stroke-width':'1.2','stroke-dasharray':'2 9',class:'wheel-spin'}));
+  svg.appendChild(mk('circle',{cx,cy,r:rInner+11,fill:'none',stroke:'var(--ouro-forte)','stroke-opacity':'0.3','stroke-width':'1','stroke-dasharray':'1 8',class:'wheel-spin-rev'}));
   for(let s=0;s<12;s++){
     const lonB=s*30;const[bx,by]=pt(lonB,rOut);const[bi,bj]=pt(lonB,rSign);
     svg.appendChild(mk('line',{x1:bx,y1:by,x2:bi,y2:bj,class:'tick'}));
@@ -700,7 +757,7 @@ function drawWheel(){
 /* ============================================================
    Leitura via IA (produção: /api/reading · preview: fallback)
    ============================================================ */
-const SYSTEM_ASTRO=`Você é uma astróloga brasileira experiente, com décadas de prática em astrologia tropical. Você lê mapas cruzando o mapa natal da pessoa com os trânsitos atuais dos planetas. Seu tom é acolhedor, maduro e específico — nunca genérico. Você SEMPRE ancora o que diz em posições e trânsitos reais fornecidos. Você fala de tendências, ciclos e orientações para reflexão — nunca faz promessas determinísticas de fatos ou datas. Escreve em português do Brasil, em prosa fluida, sem markdown, sem listas, sem títulos. REGRA DE OURO: nunca escreva algo que caberia em qualquer pessoa do mesmo signo solar; use os detalhes exclusivos do mapa (graus, casas, aspectos, retrógrados, regente, temperamento) e cite ao menos dois fatores específicos.`;
+const SYSTEM_ASTRO=`Você é uma astróloga brasileira experiente e acolhedora. Você lê o mapa da pessoa cruzando o nascimento com os astros de hoje. Escreva em português do Brasil impecável, com gramática e concordância corretas. Use linguagem SIMPLES e explicada, como quem conversa com um amigo de 45 anos que não entende de astrologia: sempre que citar um termo técnico (trânsito, casa, aspecto, retrógrado), explique em poucas palavras o que ele significa na vida real da pessoa. Nada de jargão solto. Fale de tendências e orientações para reflexão — nunca prometa fatos ou datas exatas. Sem markdown, sem listas, sem títulos. REGRA DE OURO: nunca escreva algo genérico que caberia em qualquer pessoa do mesmo signo; use os detalhes exclusivos deste mapa e cite ao menos dois deles, sempre traduzidos em linguagem do dia a dia.`;
 async function askAstrologer(area,prompt){
   try{
     const out=await apiPost("/api/reading",{lead_id:LEAD_ID,area,prompt},true);
@@ -719,15 +776,25 @@ async function askAstrologer(area,prompt){
 async function generateWeekly(){
   const {text}=chartSummary();const el=$('#weekly');
   try{
-    const out=await askAstrologer('weekly',`${text}\n\nEscreva o "clima astral desta semana" para ${DADOS.nome}, em no máximo 110 palavras, com base nos trânsitos de hoje sobre o mapa. Seja concreto e caloroso. Termine despertando curiosidade sobre dinheiro, relações e trabalho sem entregá-los.`);
+    const out=await askAstrologer('weekly',`${text}\n\nEscreva o horóscopo desta semana para ${DADOS.nome}, em no máximo 110 palavras, com base nos astros de hoje sobre o mapa. Linguagem simples, calorosa e fácil de entender — se usar um termo de astrologia, explique rapidinho o que significa. Português correto. Termine despertando curiosidade sobre dinheiro, amor e trabalho, sem entregar os detalhes.`);
     el.classList.add('serif-lead');el.textContent=out||'Não consegui ler os trânsitos agora.';
   }catch(e){el.innerHTML='<span class="err">O céu está nublado para a leitura agora.</span>';}
 }
 const AREAS=[
-  {k:'financeira',rot:'01',titulo:'Mapa Financeiro',foco:'dinheiro, ganhos, gastos, investimentos, segurança material e a relação da pessoa com o valor',glyph:'♇'},
-  {k:'relacional',rot:'02',titulo:'Mapa Relacional',foco:'amor, vínculos, parcerias, família e a vida afetiva',glyph:'♀'},
-  {k:'profissional',rot:'03',titulo:'Mapa Profissional',foco:'carreira, vocação, reconhecimento, direção profissional e timing de decisões',glyph:'♄'}
+  {k:'financeira',rot:'01',subt:'Dinheiro',titulo:'Mapa Financeiro',foco:'dinheiro, ganhos, gastos, investimentos, segurança material e a relação da pessoa com o valor',glyph:'♇'},
+  {k:'relacional',rot:'02',subt:'Amor e Relações',titulo:'Mapa Relacional',foco:'amor, vínculos, parcerias, família e a vida afetiva',glyph:'♀'},
+  {k:'profissional',rot:'03',subt:'Trabalho e Carreira',titulo:'Mapa Profissional',foco:'carreira, vocação, reconhecimento, direção profissional e o momento certo para decisões',glyph:'♄'}
 ];
+function iscaFor(A,transits){
+  const h=transits&&transits[0], p=h?PLANET_PT[h.transit]:'Os astros';
+  const T={
+    financeira:`Há um movimento forte de ${p} mexendo com o seu dinheiro neste momento. Uma decisão financeira está se formando — e o timing certo pode mudar tudo…`,
+    relacional:`${p} está tocando a sua vida afetiva de um jeito que você talvez já esteja sentindo. Um vínculo pede atenção, e algo começa a se abrir no amor…`,
+    profissional:`Sua carreira entra num ciclo puxado por ${p}. Existe uma virada de direção possível — e uma hora certa para agir com coragem…`
+  };
+  return T[A.k];
+}
+const FAKE_FILL='Neste ciclo, os trânsitos mostram um caminho claro para você. A leitura completa revela o momento exato, os cuidados que valem a pena e o que fazer para atravessar esta fase com segurança, equilíbrio e confiança nas suas escolhas.';
 function buildMapCards(){
   const wrap=$('#maps');wrap.innerHTML='';
   const {transits,TG}=chartSummary();
@@ -735,22 +802,29 @@ function buildMapCards(){
     const card=document.createElement('div');card.className='card map locked';card.id='map-'+A.k;
     const rel=transits.slice(0,3).map(h=>`${PLANET_PT[h.transit]} ${h.name} ${TG(h.target)}`).join('  ·  ');
     card.innerHTML=`
-      <div class="area-k">${A.rot} · área de vida</div>
+      <div class="area-k">${A.rot} · ${A.subt}</div>
       <h3>${A.glyph} ${A.titulo}</h3>
       <div class="transits">${rel}</div>
-      <div class="prose" id="prose-${A.k}"><span class="spinner"></span> leitura pronta para desbloquear…</div>
-      <div class="lockbar"><div class="lk">🔒 conteúdo completo bloqueado</div></div>`;
+      <div class="isca">${iscaFor(A,transits)}</div>
+      <div class="blurfill">${FAKE_FILL}</div>
+      <div class="prose" id="prose-${A.k}" style="display:none"></div>
+      <div class="lockbar"><div class="lk">🔒 Desbloqueie para ler esta área por completo</div></div>`;
     wrap.appendChild(card);
   });
 }
 async function revelarMapas(){
   $('#paywall').style.display='none';
   const {text}=chartSummary();
-  document.querySelectorAll('.map').forEach(m=>m.classList.remove('locked'));
+  document.querySelectorAll('.map').forEach(m=>{
+    m.classList.remove('locked');
+    m.querySelector('.isca')?.remove();
+    m.querySelector('.blurfill')?.remove();
+    const pr=m.querySelector('.prose'); if(pr)pr.style.display='';
+  });
   await Promise.all(AREAS.map(async A=>{
-    const el=$('#prose-'+A.k);
+    const el=$('#prose-'+A.k); el.innerHTML='<span class="spinner"></span> escrevendo sua leitura…';
     try{
-      const out=await askAstrologer(A.k,`${text}\n\nEscreva o ${A.titulo} de ${DADOS.nome}: leitura profunda sobre ${A.foco}. Entre 170 e 210 palavras. Cruze explicitamente 2 ou 3 posições natais com trânsitos atuais reais. Aponte o ciclo do momento, um ponto de atenção e uma orientação prática. Sem promessas de fatos ou datas.`);
+      const out=await askAstrologer(A.k,`${text}\n\nEscreva a leitura de "${A.subt}" para ${DADOS.nome}, cobrindo ${A.foco}. Entre 170 e 210 palavras. Linguagem simples, calorosa e fácil de entender, como uma conversa — quando usar um termo astrológico, explique em poucas palavras o que ele significa na vida da pessoa. Baseie-se em 2 ou 3 posições reais do mapa cruzadas com os trânsitos de hoje. Diga o que está acontecendo agora, um ponto de atenção e um conselho prático. Português correto, sem promessas de fatos ou datas exatas.`);
       el.classList.add('serif-lead');el.textContent=out||'Leitura indisponível.';
     }catch(e){el.innerHTML='<span class="err">Não consegui completar esta leitura agora.</span>';}
   }));

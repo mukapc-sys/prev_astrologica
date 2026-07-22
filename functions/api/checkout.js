@@ -2,13 +2,13 @@ import { json, onRequestOptions } from "./_shared.js";
 export { onRequestOptions };
 
 // POST /api/checkout  { lead_id, email, nome }
-// Cria um pagamento PIX (checkout transparente) no Mercado Pago 
+// Cria um pagamento PIX (checkout transparente) no Mercado Pago
 export async function onRequestPost({ request, env }) {
   try {
     const b = await request.json();
     if (!b.lead_id || !b.email) return json({ error: "dados incompletos" }, 400);
 
-    const amount = Number(env.PRECO || 19,90);
+    const amount = Number(env.PRECO || 47);
     const origin = new URL(request.url).origin;
     const nome = (b.nome || "Cliente").trim();
     const [first, ...rest] = nome.split(" ");

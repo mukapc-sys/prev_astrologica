@@ -17,6 +17,7 @@ binding = "AI"
 PRECO = "19.90"
 LLM_PROVIDER = "workers-ai"                              # "workers-ai" ou "external"
 LLM_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"   # modelo aberto na Cloudflare
+VAPID_PUBLIC_KEY = "BGqwJgXrlDaCSwxLn_6udzD7T4SfNIm2xNL_dW2bMZOnKLnc-YQo8Z2F455M0rBb1Srl5EFgJHP-ZwAY5_waTLA"
 
 # Para trocar por provedor externo (ex.: Gemini) mais tarde:
 #   LLM_PROVIDER = "external"
@@ -27,4 +28,5 @@ LLM_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"   # modelo aberto na Clou
 # SEGREDOS (painel: Pages > Settings > Variables and Secrets > Encrypt):
 #   MP_ACCESS_TOKEN  -> Access Token do Mercado Pago
 #   SESSION_SECRET   -> frase aleatória longa (assina os tokens de login)
+#   VAPID_PRIVATE_KEY-> chave privada do push (só na Fase 4, para ENVIAR notificações)
 #   (com Workers AI você NÃO precisa de chave de IA)

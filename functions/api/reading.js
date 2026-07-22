@@ -18,6 +18,25 @@ export async function onRequestPost({ request, env }) {
     const area = b.area;
     if (!b.prompt) return json({ error: "prompt ausente" }, 400);
 
+    // Horóscopo semanal: 1 por semana (domingo→sábado). Reabrir na mesma semana devolve o mesmo.
+    if (area === "weekly") {
+      const wk = weekStartBR();
+      if (b.lead_id) {
+        const cached = await env.DB.prepare(
+          `SELECT content FROM horoscopes WHERE lead_id=? AND week_start=?`
+        ).bind(b.lead_id, wk).first();
+        if (cached) return json({ content: cached.content, cached: true });
+      }
+      const content = await callLLM(env, SYSTEM, b.prompt);
+      if (b.lead_id) {
+        await env.DB.prepare(
+          `INSERT INTO horoscopes (id,lead_id,week_start,content) VALUES (?,?,?,?)
+           ON CONFLICT(lead_id,week_start) DO UPDATE SET content=excluded.content`
+        ).bind(crypto.randomUUID(), b.lead_id, wk, content).run();
+      }
+      return json({ content });
+    }
+
     // Áreas pagas: exigem desbloqueio confirmado + cache por lead/área
     if (PAGAS.includes(area)) {
       if (!b.lead_id) return json({ error: "lead ausente" }, 400);
@@ -47,6 +66,15 @@ export async function onRequestPost({ request, env }) {
 // IA plugável:
 //  - "workers-ai" (padrão): roda NA Cloudflare via binding env.AI, sem chave externa.
 //  - "external": qualquer provedor compatível com OpenAI (Gemini, DeepSeek, GPT...).
+// Início da semana (domingo) no fuso do Brasil (UTC-3), no formato YYYY-MM-DD
+function weekStartBR() {
+  const nowBR = new Date(Date.now() - 3 * 3600 * 1000);
+  const day = nowBR.getUTCDay(); // 0 = domingo
+  const sunday = new Date(nowBR);
+  sunday.setUTCDate(nowBR.getUTCDate() - day);
+  return sunday.toISOString().slice(0, 10);
+}
+
 async function callLLM(env, system, user) {
   const messages = [
     { role: "system", content: system },

@@ -594,41 +594,35 @@ function acRender(items){
   });
   acList.classList.add('on');
 }
-function ehBrasil(p){ return p && (p.countrycode==='BR' || p.countrycode==='br' || /brasil|brazil/i.test(p.country||'')); }
-function dedup(items){ const seen=new Set(); return items.filter(it=>{ if(!it.nome||isNaN(it.lat))return false; const k=it.label.toLowerCase(); if(seen.has(k))return false; seen.add(k); return true; }); }
-async function acSearch(q){
-  try{
-    const url=`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lang=pt&limit=8&lat=-14.2&lon=-51.9`;
-    const r=await fetch(url); const data=await r.json();
-    const items=dedup((data.features||[]).filter(f=>ehBrasil(f.properties)).map(f=>{
-      const p=f.properties,c=f.geometry.coordinates,uf=p.state||'';
-      const nome=p.name||p.city||'';
-      return {nome,detalhe:uf,label:uf?`${nome}, ${uf}`:nome,lat:c[1],lon:c[0]};
-    }));
-    if(items.length){acRender(items);return;}
-    await acSearchNominatim(q);
-  }catch(e){ await acSearchNominatim(q); }
+/* ---- base local de cidades (IBGE, servida do próprio app — sem serviço externo) ---- */
+let CIDADES_BR=null, cidadesCarregando=false;
+async function carregarCidades(){
+  if(CIDADES_BR||cidadesCarregando) return;
+  cidadesCarregando=true;
+  try{ const r=await fetch('/cidades.json'); CIDADES_BR=await r.json(); }
+  catch(e){ CIDADES_BR=[]; }
+  cidadesCarregando=false;
 }
-async function acSearchNominatim(q){
-  try{
-    const url=`https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(q)}&countrycodes=br&format=json&addressdetails=1&limit=8&accept-language=pt-BR`;
-    const r=await fetch(url); const arr=await r.json();
-    const items=dedup((arr||[]).map(o=>{
-      const a=o.address||{};
-      const nome=a.city||a.town||a.village||a.municipality||(o.display_name||'').split(',')[0];
-      const uf=a.state||'';
-      return {nome,detalhe:uf,label:uf?`${nome}, ${uf}`:nome,lat:parseFloat(o.lat),lon:parseFloat(o.lon)};
-    }));
-    if(items.length){acRender(items);return;}
-    acList.innerHTML='<div class="ac-msg">Nenhuma cidade encontrada. Tente o nome completo ou toque em “inserir coordenadas”.</div>';acList.classList.add('on');
-  }catch(e){acList.innerHTML='<div class="ac-msg">Busca indisponível — toque em “inserir coordenadas”.</div>';acList.classList.add('on');}
+carregarCidades();
+const normTxt=s=>(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+function acSearch(q){
+  if(!CIDADES_BR){ acList.innerHTML='<div class="ac-msg">carregando cidades…</div>';acList.classList.add('on'); carregarCidades().then(()=>acSearch(q)); return; }
+  const nq=normTxt(q);
+  const comeca=[], contem=[];
+  for(const c of CIDADES_BR){
+    const nn=normTxt(c[0]);
+    if(nn.startsWith(nq)) comeca.push(c);
+    else if(nn.includes(nq)) contem.push(c);
+    if(comeca.length>=8) break;
+  }
+  const list=comeca.concat(contem).slice(0,8).map(c=>({nome:c[0],detalhe:c[1],label:`${c[0]}, ${c[1]}`,lat:c[2],lon:c[3]}));
+  acRender(list);
 }
 acInput.addEventListener('input',()=>{
   CIDADE_SEL=null;$('#cidadeHint').textContent='Comece a digitar o nome e escolha na lista.';
   const q=acInput.value.trim();clearTimeout(acTimer);
-  if(q.length<3){acClose();return;}
-  acList.innerHTML='<div class="ac-msg">buscando…</div>';acList.classList.add('on');
-  acTimer=setTimeout(()=>acSearch(q),350);
+  if(q.length<2){acClose();return;}
+  acTimer=setTimeout(()=>acSearch(q),120);
 });
 document.addEventListener('click',e=>{if(!e.target.closest('#cidadeBusca')&&!e.target.closest('#cidadeList'))acClose();});
 $('#manualToggle').addEventListener('click',()=>{$('#manualCoords').classList.toggle('on');});

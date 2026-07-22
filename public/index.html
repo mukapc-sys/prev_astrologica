@@ -244,11 +244,11 @@
       </div>
       <div class="field only-signup">
         <label for="data">Data de nascimento</label>
-        <input id="data" type="date" />
+        <input id="data" type="text" inputmode="numeric" autocomplete="bday" placeholder="DD/MM/AAAA" maxlength="10" />
       </div>
       <div class="field only-signup" id="horaField">
         <label for="hora">Hora de nascimento</label>
-        <input id="hora" type="time" />
+        <input id="hora" type="text" inputmode="numeric" placeholder="HH:MM   (ex: 14:30)" maxlength="5" />
         <div class="hint">Quanto mais exata, mais preciso o ascendente e as casas.</div>
       </div>
       <label class="check only-signup"><input id="semHora" type="checkbox"/> Não sei minha hora de nascimento</label>
@@ -574,6 +574,9 @@ const show=id=>{document.querySelectorAll('.screen').forEach(s=>s.classList.remo
 $('#precoLabel').textContent="R$ "+fmtBRL(PRECO);
 $('#pixPreco').textContent=fmtBRL(PRECO);
 $('#semHora').addEventListener('change',e=>{$('#horaField').style.display=e.target.checked?'none':'block';});
+/* máscaras: digita só números, o app formata */
+$('#data').addEventListener('input',e=>{let v=e.target.value.replace(/\D/g,'').slice(0,8);if(v.length>4)v=v.slice(0,2)+'/'+v.slice(2,4)+'/'+v.slice(4);else if(v.length>2)v=v.slice(0,2)+'/'+v.slice(2);e.target.value=v;});
+$('#hora').addEventListener('input',e=>{let v=e.target.value.replace(/\D/g,'').slice(0,4);if(v.length>2)v=v.slice(0,2)+':'+v.slice(2);e.target.value=v;});
 
 /* ---- busca de cidade (autocompletar · Photon/OpenStreetMap, gratuito) ---- */
 let CIDADE_SEL=null;               // {label, lat, lon}
@@ -648,34 +651,48 @@ $('#gerar').addEventListener('click',()=> MODE==="signup" ? fazerCadastro() : fa
 async function fazerCadastro(){
   const err=$('#formErr');err.textContent='';
   const nome=$('#nome').value.trim(), email=$('#email').value.trim(), senha=$('#senha').value;
-  const whatsapp=$('#whatsapp').value.trim(), data=$('#data').value, semHora=$('#semHora').checked, hora=$('#hora').value;
+  const whatsapp=$('#whatsapp').value.trim(), dataBR=$('#data').value.trim(), semHora=$('#semHora').checked, horaBR=$('#hora').value.trim();
   if(!nome){err.textContent='Me diz seu nome primeiro.';return;}
   if(!email||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){err.textContent='Informe um e-mail válido.';return;}
   if(!senha||senha.length<6){err.textContent='Crie uma senha de pelo menos 6 caracteres.';return;}
-  if(!data){err.textContent='Preciso da sua data de nascimento.';return;}
+  if(!/^\d{2}\/\d{2}\/\d{4}$/.test(dataBR)){err.textContent='Digite a data no formato DD/MM/AAAA.';return;}
+  const [D,Mo,Y]=dataBR.split('/').map(Number);
+  const anoAtual=new Date().getFullYear();
+  if(Mo<1||Mo>12||D<1||D>31||Y<1900||Y>anoAtual){err.textContent='Data de nascimento inválida. Confira DD/MM/AAAA.';return;}
+  const dataISO=`${Y}-${String(Mo).padStart(2,'0')}-${String(D).padStart(2,'0')}`;
   let lat,lon,cidadeNome;
   const manualOn=$('#manualCoords').classList.contains('on');
   if(CIDADE_SEL){lat=CIDADE_SEL.lat;lon=CIDADE_SEL.lon;cidadeNome=CIDADE_SEL.label;}
   else if(manualOn){lat=parseFloat($('#lat').value);lon=parseFloat($('#lon').value);if(isNaN(lat)||isNaN(lon)){err.textContent='Informe latitude e longitude.';return;}cidadeNome=$('#cidadeBusca').value.trim()||'coordenadas manuais';}
   else{err.textContent='Digite e selecione sua cidade de nascimento na lista.';return;}
-  const hasTime=!semHora&&!!hora;
-  const [Y,Mo,D]=data.split('-').map(Number);
-  let hLocal=12; if(hasTime){const[hh,mm]=hora.split(':').map(Number);hLocal=hh+mm/60;}
+  let hasTime=false, hLocal=12;
+  if(!semHora && horaBR){
+    if(!/^\d{1,2}:\d{2}$/.test(horaBR)){err.textContent='Digite a hora no formato HH:MM (ex: 14:30).';return;}
+    const [hh,mm]=horaBR.split(':').map(Number);
+    if(hh>23||mm>59){err.textContent='Hora inválida. Use HH:MM (ex: 14:30).';return;}
+    hasTime=true; hLocal=hh+mm/60;
+  }
   const jd=julianDay(Y,Mo,D,hLocal-OFFSET);
   CHART=computeChart(jd,lat,lon,hasTime);
-  DADOS={nome,email,whatsapp,data,hora,hasTime,cidade:cidadeNome,lat,lon};
+  DADOS={nome,email,whatsapp,data:dataISO,hora:horaBR,hasTime,cidade:cidadeNome,lat,lon};
   UNLOCKED=false;
 
   let msg="";
+  const btn=$('#gerar'); btn.disabled=true; const btnTxt=btn.textContent; btn.innerHTML='<span class="spinner"></span> criando sua conta…';
   try{
     const out=await apiPost("/api/signup",{nome,email,telefone:whatsapp||null,senha,
-      birth_date:data,birth_time:hasTime?hora:null,has_time:hasTime,birth_city:ci[0],lat,lon,chart_json:chartSnapshot()});
+      birth_date:dataISO,birth_time:hasTime?horaBR:null,has_time:hasTime,birth_city:cidadeNome,lat,lon,chart_json:chartSnapshot()});
     SESSION=out.token; LEAD_ID=out.lead_id; store.set("pac_token",SESSION);
     msg="✓ conta criada — horóscopo semanal ativado";
   }catch(e){
-    if(String(e.message).includes("email_ja_existe")){err.textContent='Esse e-mail já tem conta. Toque em "Entrar".';return;}
-    DEMO=true; msg="modo demonstração · backend não conectado";
+    btn.disabled=false; btn.textContent=btnTxt;
+    const m=String(e.message||'');
+    if(m.includes("email_ja_existe")){err.textContent='Esse e-mail já tem conta. Toque em "Entrar" acima.';return;}
+    const semRede=(e instanceof TypeError)||/failed to fetch|networkerror|load failed/i.test(m);
+    if(semRede && API_BASE===""){ DEMO=true; msg="modo demonstração"; }   // preview sem backend
+    else { console.warn('signup falhou:',e); err.textContent='Não consegui criar sua conta agora. Confira sua conexão e tente de novo.'; return; }
   }
+  btn.disabled=false; btn.textContent=btnTxt;
   window.__saveMsg=msg; runLoading();
 }
 

@@ -169,6 +169,22 @@
   .iosHelp{font-size:14px;color:#e8e6f0;background:rgba(11,10,31,.55);border:1px solid var(--linha);border-radius:12px;padding:13px 15px;margin-top:8px;line-height:1.55;display:none}
   .iosHelp.on{display:block}
   .pessoal{display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap;margin-top:7px;font-size:14.5px;color:var(--prata)}
+  .paywall{position:relative;overflow:hidden}
+  .selo{position:absolute;top:0;right:0;background:linear-gradient(135deg,var(--ouro),var(--ouro-forte));color:#1a1330;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:0 16px 0 14px}
+  .ancora{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px}
+  .ancora .de{font-size:16px;color:var(--mudo)}
+  .ancora s{color:var(--mudo)}
+  .off{background:rgba(224,74,74,.16);border:1px solid rgba(224,74,74,.5);color:#ff8a8a;font-size:13px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.03em}
+  .semAssinatura{text-align:center;font-size:14.5px;color:var(--prata);margin-top:4px}
+  .timerBox{margin:16px auto 4px;text-align:center;background:rgba(11,10,31,.55);border:1px solid var(--linha);border-radius:14px;padding:12px}
+  .timerLabel{font-size:13.5px;color:var(--mudo);letter-spacing:.02em}
+  .timerNum{font-family:var(--mono);font-size:30px;font-weight:500;color:var(--ouro);margin-top:3px;letter-spacing:.06em}
+  .timerBox.fim .timerNum{font-size:19px;color:var(--prata)}
+  .entregaveis{list-style:none;margin-top:20px;display:grid;gap:15px}
+  .entregaveis li{display:block;padding-left:26px;position:relative}
+  .entregaveis li:before{content:"✦";position:absolute;left:0;top:1px;color:var(--ouro);font-size:15px}
+  .entregaveis li b{display:block;font-size:17px;color:var(--osso);font-weight:600;margin-bottom:3px}
+  .entregaveis li span{display:block;font-size:15.5px;color:#cfccdd;line-height:1.5}
   .pessoal b{color:var(--ouro);font-weight:600}
   .pessoal .sep{color:var(--linha)}
   .casas{margin-top:16px}
@@ -344,16 +360,31 @@
     <div class="maps" id="maps"></div>
 
     <div class="card paywall" id="paywall">
-      <div class="eyebrow" style="justify-content:center">Desbloquear tudo</div>
-      <div class="price" style="margin-top:12px"><span id="precoLabel">R$ 19,90</span><small> / pagamento único</small></div>
-      <ul>
-        <li>Mapa Financeiro completo — ciclos de ganho, cautela e investimento</li>
-        <li>Mapa Relacional completo — afetos, vínculos e o que os trânsitos pedem</li>
-        <li>Mapa Profissional completo — direção, visibilidade e timing de decisões</li>
-        <li>Horóscopo semanal e alertas dos astros, direto no app</li>
+      <div class="selo">oferta de lançamento</div>
+      <div class="eyebrow" style="justify-content:center">Sua leitura completa está pronta</div>
+
+      <div class="ancora">
+        <span class="de">de <s>R$ 47,00</s></span>
+        <span class="off" id="offBadge">–58%</span>
+      </div>
+      <div class="price" style="margin-top:4px"><span id="precoLabel">R$ 19,90</span><small> / pagamento único</small></div>
+      <div class="semAssinatura">Sem mensalidade. Você paga uma vez e o acesso é seu.</div>
+
+      <div class="timerBox" id="timerBox">
+        <div class="timerLabel">Este valor está reservado para você por</div>
+        <div class="timerNum" id="timerNum">15:00</div>
+      </div>
+
+      <ul class="entregaveis">
+        <li><b>Mapa Financeiro completo</b><span>Como está o seu momento com dinheiro: onde há chance de ganho, o que exige cautela, o período mais favorável para investir ou segurar — lido a partir dos seus planetas, não de horóscopo genérico.</span></li>
+        <li><b>Mapa Relacional completo</b><span>O que os astros mostram sobre seus afetos: o que atrai e o que afasta, como está sua fase para começar, aprofundar ou encerrar um vínculo, e o ponto de atenção nos seus relacionamentos agora.</span></li>
+        <li><b>Mapa Profissional completo</b><span>A direção da sua carreira neste ciclo: onde sua vocação pede espaço, quando é hora de aparecer e arriscar, quando é hora de consolidar — e a decisão que pede mais cuidado.</span></li>
+        <li><b>Horóscopo semanal, toda semana</b><span>Uma leitura nova a cada semana, feita para o seu mapa — não para o seu signo. Chega no app com aviso quando você ativa as notificações.</span></li>
+        <li><b>Alertas dos astros</b><span>Quando um trânsito importante tocar o seu mapa, você é avisado — para não ser pego de surpresa nas fases decisivas.</span></li>
       </ul>
-      <button class="btn" id="desbloquear">Desbloquear com PIX</button>
-      <div class="secure">🔒 pagamento via Mercado Pago · PIX</div>
+
+      <button class="btn" id="desbloquear">Desbloquear minha previsão completa</button>
+      <div class="secure">🔒 pagamento via Mercado Pago · PIX · acesso liberado na hora</div>
     </div>
 
     <div class="savestate" id="saveState"></div>
@@ -567,6 +598,31 @@ const CASAS=[
   {n:11,nome:'Casa 11 — Amigos e sonhos',desc:'Amizades, grupos, projetos coletivos e os sonhos que você quer realizar.'},
   {n:12,nome:'Casa 12 — Mundo interno',desc:'O silêncio necessário: descanso, espiritualidade, o que fica escondido e a cura interior.'}
 ];
+/* ---- Cronômetro da oferta (persistente por aparelho — não reinicia no refresh) ---- */
+const OFERTA_MIN=15;
+let timerInt=null;
+function iniciarTimer(){
+  const chave='pac_oferta_'+(LEAD_ID||'anon');
+  let ini=parseInt(store.get(chave)||'0',10);
+  if(!ini){ini=Date.now();store.set(chave,String(ini));}
+  const fim=ini+OFERTA_MIN*60000;
+  const box=$('#timerBox'), num=$('#timerNum');
+  if(!box||!num) return;
+  clearInterval(timerInt);
+  const tick=()=>{
+    const resta=fim-Date.now();
+    if(resta<=0){
+      clearInterval(timerInt);
+      box.classList.add('fim');
+      $('#timerBox').querySelector('.timerLabel').textContent='Reserva encerrada';
+      num.textContent='o valor promocional segue enquanto durar o lançamento';
+      return;
+    }
+    const m=Math.floor(resta/60000), s=Math.floor((resta%60000)/1000);
+    num.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  };
+  tick(); timerInt=setInterval(tick,1000);
+}
 async function adicionarHora(){
   const err=$('#horaErr'), btn=$('#salvarHora'), val=$('#novaHora').value.trim();
   err.textContent='';
@@ -870,6 +926,7 @@ function renderResult(){
   buildMapCards();
   renderRituais();
   renderCasas();
+  if(!UNLOCKED) iniciarTimer();
   generateWeekly();
   if(typeof refreshAppButtons==='function') refreshAppButtons();
   if(UNLOCKED) revelarMapas();

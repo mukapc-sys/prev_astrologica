@@ -200,6 +200,14 @@
   .casaSigno{font-size:14.5px;color:var(--ouro);font-weight:600}
   .casaDesc{font-size:16px;color:#e8e6f0;line-height:1.5;margin-top:5px}
   .casaPlan{font-size:14px;color:var(--prata);margin-top:5px;font-weight:500}
+  .casaSignif{font-size:16px;color:#e8e6f0;line-height:1.55;margin-top:8px;padding-left:11px;border-left:2px solid rgba(243,214,138,.45)}
+  .casaAgora{font-size:15.5px;color:#dedbe9;line-height:1.55;margin-top:9px;background:rgba(243,214,138,.08);border:1px solid rgba(243,214,138,.22);border-radius:11px;padding:11px 13px}
+  .casaAgora b{color:var(--ouro)}
+  .casaIsca{font-size:15px;color:var(--ouro);line-height:1.5;margin-top:8px;opacity:.92}
+  .casaRow.bloqueada .casaDesc{opacity:.75}
+  .casasCta{margin-top:18px;background:rgba(11,10,31,.55);border:1px solid rgba(243,214,138,.3);border-radius:14px;padding:15px;text-align:center}
+  .casasCta b{display:block;color:var(--ouro);font-size:16.5px;margin-bottom:5px}
+  .casasCta span{display:block;font-size:15px;color:#dedbe9;line-height:1.5}
   .casaAviso{font-size:16px;color:#e8e6f0;line-height:1.55;background:rgba(11,10,31,.5);border:1px solid var(--linha);border-radius:12px;padding:14px}
   .addHora{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
   .addHora input{flex:1;min-width:130px;background:rgba(11,10,31,.6);color:var(--osso);border:1px solid rgba(185,180,224,.24);border-radius:12px;padding:14px;font-family:var(--sans);font-size:16.5px}
@@ -384,6 +392,10 @@
         <div class="entregaItem">
           <div class="entregaHead"><span class="entregaIco">🚀</span><b>Mapa Profissional Completo</b></div>
           <span>A direção da sua carreira neste ciclo: onde a sua vocação pede espaço, quando é hora de aparecer e arriscar, quando é hora de consolidar e qual decisão pede mais cuidado.</span>
+        </div>
+        <div class="entregaItem">
+          <div class="entregaHead"><span class="entregaIco">🏠</span><b>Leitura das suas 12 Casas</b></div>
+          <span>O que cada uma das 12 áreas da sua vida revela sobre você, do dinheiro à família, e o que os astros estão pedindo em cada uma delas neste momento. Você vê onde agir agora e onde é melhor esperar.</span>
         </div>
         <div class="entregaItem">
           <div class="entregaHead"><span class="entregaIco">🌙</span><b>Horóscopo Semanal, Toda Semana</b></div>
@@ -665,6 +677,62 @@ async function adicionarHora(){
   }
   renderResult();
 }
+/* ---- Interpretação: casa + signo (144 combinações) + o "agora" pelos trânsitos ---- */
+const CASA_FRASE={
+  1:'Você se apresenta ao mundo {m}.',
+  2:'Você constrói sua segurança e ganha dinheiro {m}.',
+  3:'Você pensa, aprende e se comunica {m}.',
+  4:'Você cuida da sua casa, da família e das suas raízes {m}.',
+  5:'Você se diverte, cria e ama {m}.',
+  6:'Você organiza sua rotina, seu trabalho do dia a dia e sua saúde {m}.',
+  7:'Você se relaciona nas parcerias sérias {m}.',
+  8:'Você atravessa mudanças profundas e lida com o dinheiro compartilhado {m}.',
+  9:'Você amplia sua vida, estuda e acredita {m}.',
+  10:'Você constrói sua carreira e sua imagem pública {m}.',
+  11:'Você faz amizades e persegue seus sonhos {m}.',
+  12:'Você se recolhe, descansa e cuida do que é invisível {m}.'
+};
+const SIGNO_MANEIRA={
+  'Áries':'com iniciativa e coragem, indo direto ao ponto e preferindo começar a esperar',
+  'Touro':'com calma e constância, buscando estabilidade e prazer no que é concreto',
+  'Gêmeos':'pela comunicação e pelas ideias, em várias frentes ao mesmo tempo',
+  'Câncer':'pelo cuidado e pela emoção, protegendo quem você ama',
+  'Leão':'com brilho e generosidade, deixando sua marca pessoal em tudo',
+  'Virgem':'com capricho e análise, cuidando dos detalhes que os outros não veem',
+  'Libra':'pelo equilíbrio e pela parceria, buscando harmonia e beleza',
+  'Escorpião':'com intensidade e profundidade, sem espaço para superficialidade',
+  'Sagitário':'com liberdade e otimismo, precisando de espaço e sentido',
+  'Capricórnio':'com disciplina e responsabilidade, construindo aos poucos e para durar',
+  'Aquário':'de um jeito próprio e independente, fugindo do que é padrão',
+  'Peixes':'pela sensibilidade e pela intuição, com muita entrega'
+};
+const TRANSITO_AGORA={
+  'Jupiter':{t:'Júpiter',bom:'expandir, arriscar um passo maior e dizer sim a oportunidades nesta área',evite:'prometer mais do que consegue entregar ou exagerar na confiança'},
+  'Saturno':{t:'Saturno',bom:'consolidar, assumir responsabilidade e construir algo sólido aqui',evite:'mudanças por impulso e esperar reconhecimento rápido'},
+  'Urano':{t:'Urano',bom:'inovar e se libertar de algo que já não cabe mais nesta área',evite:'decisões precipitadas movidas só pela vontade de fugir da rotina'},
+  'Netuno':{t:'Netuno',bom:'ouvir a intuição e cuidar do lado sensível desta área da vida',evite:'ilusões, promessas vagas e assinar o que não está claro'},
+  'Plutao':{t:'Plutão',bom:'encarar de frente o que precisa mudar e se transformar de verdade',evite:'insistir no controle e segurar o que já pediu passagem'},
+  'Marte':{t:'Marte',bom:'agir com coragem e resolver o que estava parado nesta área',evite:'brigas, pressa e desgaste por impaciência'},
+  'Venus':{t:'Vênus',bom:'cuidar dos vínculos, do prazer e da beleza nesta parte da vida',evite:'gastos por impulso e agradar demais para evitar conflito'},
+  'Mercurio':{t:'Mercúrio',bom:'conversar, negociar, estudar e colocar as ideias no lugar',evite:'assinar sem ler e falar antes de pensar'},
+  'Sol':{t:'o Sol',bom:'assumir o protagonismo e se dedicar a esta área com atenção',evite:'centralizar tudo em você e esquecer de ouvir'},
+  'Lua':{t:'a Lua',bom:'cuidar de como você se sente em relação a esta área',evite:'decisões definitivas tomadas no calor da emoção'}
+};
+function transitosPorCasa(){
+  if(!CHART||!CHART.hasTime) return {};
+  const now=new Date();
+  const jd=julianDay(now.getUTCFullYear(),now.getUTCMonth()+1,now.getUTCDate(),now.getUTCHours()+now.getUTCMinutes()/60);
+  const atual=computeChart(jd,DADOS.lat,DADOS.lon,false);
+  const porCasa={};
+  const ordem=['Plutao','Netuno','Urano','Saturno','Jupiter','Marte','Venus','Mercurio','Sol','Lua'];
+  ordem.forEach(k=>{
+    const b=atual.bodies[k]; if(!b) return;
+    const casa=((b.idx-CHART.ascIdx)%12+12)%12+1;
+    if(!porCasa[casa]) porCasa[casa]=[];
+    porCasa[casa].push(k);
+  });
+  return porCasa;
+}
 function renderCasas(){
   const sub=$('#casasSub'), box=$('#casasList');
   if(!CHART) return;
@@ -686,19 +754,49 @@ function renderCasas(){
   const ascSign=signOf(CHART.asc).sign;
   sub.textContent=`Seu Ascendente é ${ascSign}, então é por ele que sua roda começa. Cada casa é uma área da sua vida.`;
   const b=CHART.bodies;
+  const porCasa=transitosPorCasa();
+  // amostra grátis: Casa 1 e a casa mais habitada do mapa
+  let maisCheia=1, maxP=-1;
+  CASAS.forEach(c=>{const q=Object.keys(b).filter(k=>b[k].house===c.n).length; if(q>maxP&&c.n!==1){maxP=q;maisCheia=c.n;}});
+  const amostra=[1,maisCheia];
   box.innerHTML='';
   CASAS.forEach(c=>{
     const signo=SIGNS[(CHART.ascIdx + c.n - 1) % 12];
     const dentro=Object.keys(b).filter(k=>b[k].house===c.n).map(k=>PLANET_PT[k]);
-    const row=document.createElement('div');row.className='casaRow';
+    const liberada=UNLOCKED||amostra.includes(c.n);
+    const tr=(porCasa[c.n]||[]).filter(k=>TRANSITO_AGORA[k]);
+    const row=document.createElement('div');row.className='casaRow'+(liberada?'':' bloqueada');
+
+    const significado=CASA_FRASE[c.n].replace('{m}',SIGNO_MANEIRA[signo]||'');
+    let agora='';
+    if(tr.length){
+      const p=TRANSITO_AGORA[tr[0]];
+      agora=`<div class="casaAgora"><b>Agora:</b> ${p.t} está atravessando esta casa. É um bom momento para ${p.bom}. Não é o momento de ${p.evite}.</div>`;
+    }
+
+    let corpo;
+    if(liberada){
+      corpo=`<div class="casaSignif">${significado}</div>${agora}`;
+    }else if(tr.length){
+      corpo=`<div class="casaIsca">🔒 ${TRANSITO_AGORA[tr[0]].t} está ativando esta casa neste momento. Veja o que isso significa e o que fazer agora.</div>`;
+    }else{
+      corpo=`<div class="casaIsca">🔒 Veja o que ter esta casa em ${signo} revela sobre você.</div>`;
+    }
+
     row.innerHTML=`
       <div class="casaTop"><span class="casaNum">${String(c.n).padStart(2,'0')}</span>
         <span class="casaNome">${c.nome.split('· ')[1]}</span>
         <span class="casaSigno">em ${signo}</span></div>
       <div class="casaDesc">${c.desc}</div>
-      ${dentro.length?`<div class="casaPlan">✦ Você tem aqui: ${dentro.join(', ')}</div>`:''}`;
+      ${dentro.length?`<div class="casaPlan">✦ Você tem aqui: ${dentro.join(', ')}</div>`:''}
+      ${corpo}`;
     box.appendChild(row);
   });
+  if(!UNLOCKED){
+    const cta=document.createElement('div');cta.className='casasCta';
+    cta.innerHTML=`<b>Você está vendo 2 das 12 casas.</b><span>A leitura completa revela o que cada uma das 12 casas diz sobre você e o que os astros pedem em cada área da sua vida agora.</span>`;
+    box.appendChild(cta);
+  }
 }
 function renderRituais(){
   const r=ritualsToday();
@@ -1068,6 +1166,8 @@ function buildMapCards(){
 }
 async function revelarMapas(){
   $('#paywall').style.display='none';
+  UNLOCKED=true;
+  renderCasas();
   const {text}=chartSummary();
   document.querySelectorAll('.map').forEach(m=>{
     m.classList.remove('locked');

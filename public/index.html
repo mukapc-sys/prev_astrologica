@@ -180,6 +180,9 @@
   .timerNum{font-family:var(--mono);font-size:32px;font-weight:500;color:var(--ouro);margin-top:5px;letter-spacing:.06em}
   .timerBox.fim .timerNum{font-size:18px;color:var(--prata);line-height:1.4}
   .entregaTitulo{font-family:var(--serif);font-size:20px;color:var(--osso);text-align:center;margin:24px 0 14px;line-height:1.35}
+  .ofertaFinal{margin-top:26px;text-align:center}
+  .paywall .btn{margin-top:18px;padding:18px 20px;font-size:17.5px}
+  .paywall .secure{margin-top:12px}
   .entregaveis{display:grid;gap:11px}
   .entregaItem{background:rgba(11,10,31,.5);border:1px solid var(--linha);border-radius:14px;padding:15px}
   .entregaHead{display:flex;align-items:center;gap:9px;margin-bottom:7px}
@@ -363,13 +366,6 @@
     <div class="card paywall" id="paywall">
       <div class="eyebrow" style="justify-content:center">Sua leitura completa está pronta</div>
 
-      <div class="ancora">
-        <span class="de">de <s>R$ 147,00</s></span>
-        <span class="off" id="offBadge">–86%</span>
-      </div>
-      <div class="price" style="margin-top:4px"><span id="precoLabel">R$ 19,90</span></div>
-      <div class="semAssinatura">Sem Mensalidade, Você paga uma única vez!</div>
-
       <div class="timerBox" id="timerBox">
         <div class="timerLabel">Seu desconto e sua Previsão Astrológica irão expirar em:</div>
         <div class="timerNum" id="timerNum">10:00</div>
@@ -397,6 +393,15 @@
           <div class="entregaHead"><span class="entregaIco">✦</span><b>Alertas dos Astros</b></div>
           <span>Quando um trânsito importante tocar o seu mapa, você é avisado. Assim você não é pego de surpresa nas fases decisivas da sua vida.</span>
         </div>
+      </div>
+
+      <div class="ofertaFinal">
+        <div class="ancora">
+          <span class="de">de <s>R$ 147,00</s></span>
+          <span class="off" id="offBadge">–86%</span>
+        </div>
+        <div class="price"><span id="precoLabel">R$ 19,90</span></div>
+        <div class="semAssinatura">Sem Mensalidade, Você paga uma única vez!</div>
       </div>
 
       <button class="btn" id="desbloquear">Desbloquear minha previsão completa</button>
@@ -618,7 +623,7 @@ const CASAS=[
 const OFERTA_MIN=10;
 let timerInt=null;
 function iniciarTimer(){
-  const chave='pac_oferta_'+(LEAD_ID||'anon');
+  const chave='pac_oferta2_'+(LEAD_ID||'anon');
   let ini=parseInt(store.get(chave)||'0',10);
   if(!ini){ini=Date.now();store.set(chave,String(ini));}
   const fim=ini+OFERTA_MIN*60000;

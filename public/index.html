@@ -168,6 +168,19 @@
   .pillbtn[hidden]{display:none}
   .iosHelp{font-size:14px;color:#e8e6f0;background:rgba(11,10,31,.55);border:1px solid var(--linha);border-radius:12px;padding:13px 15px;margin-top:8px;line-height:1.55;display:none}
   .iosHelp.on{display:block}
+  .casas{margin-top:16px}
+  .casaRow{border-bottom:1px solid rgba(255,255,255,.06);padding:13px 0}
+  .casaRow:last-child{border-bottom:none}
+  .casaTop{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+  .casaNum{font-family:var(--mono);font-size:12px;color:var(--ouro);letter-spacing:.1em;flex:0 0 auto}
+  .casaNome{font-family:var(--serif);font-size:19px;color:var(--osso)}
+  .casaSigno{font-size:14.5px;color:var(--ouro);font-weight:600}
+  .casaDesc{font-size:16px;color:#e8e6f0;line-height:1.5;margin-top:5px}
+  .casaPlan{font-size:14px;color:var(--prata);margin-top:5px;font-weight:500}
+  .casaAviso{font-size:16px;color:#e8e6f0;line-height:1.55;background:rgba(11,10,31,.5);border:1px solid var(--linha);border-radius:12px;padding:14px}
+  .addHora{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .addHora input{flex:1;min-width:130px;background:rgba(11,10,31,.6);color:var(--osso);border:1px solid rgba(185,180,224,.24);border-radius:12px;padding:14px;font-family:var(--sans);font-size:16.5px}
+  .addHora .btn{flex:1;min-width:170px;width:auto;padding:14px 18px}
   .isca{color:var(--ouro);font-size:16.5px;line-height:1.5;margin:6px 0 12px;font-weight:500}
   .blurfill{filter:blur(6px);opacity:.42;max-height:116px;overflow:hidden;pointer-events:none;user-select:none;color:#e8e6f0;font-size:18px;line-height:1.62}
   .wheel-spin{transform-box:fill-box;transform-origin:center;animation:spinSlow 90s linear infinite}
@@ -313,6 +326,12 @@
       <div class="ritSub" id="ritSub"></div>
       <div class="ritGrid" id="ritGrid"></div>
       <div class="ritMantra" id="ritMantra"></div>
+    </div>
+
+    <div class="card casas">
+      <div class="sec-title"><span class="idx">⌂</span> Suas 12 Casas</div>
+      <div class="ritSub" id="casasSub"></div>
+      <div id="casasList"></div>
     </div>
 
     <div class="sec-title" style="margin-top:30px">Sua Previsão Completa</div>
@@ -528,6 +547,77 @@ function ritualsToday(){
   return {elemento, cor:cor[0], hex:cor[1], cristal:pick(pool.cristais,1), banho:pick(pool.banhos,2),
     foco:pick(pool.focos,0), mantra:pick(pool.mantras,3),
     regente:PLANET_PT[REG], dia, phase:x?x.phase:null, moonSign:x?x.moonSign:null};
+}
+/* ---- As 12 Casas (signo inteiro) ---- */
+const CASAS=[
+  {n:1,nome:'Casa 1 — Você',desc:'É a sua cara: o jeito como você chega nos lugares, sua aparência e a primeira impressão que passa.'},
+  {n:2,nome:'Casa 2 — Dinheiro e valor',desc:'Fala do seu dinheiro, do que você ganha com o próprio esforço e do quanto você se valoriza.'},
+  {n:3,nome:'Casa 3 — Comunicação',desc:'Como você fala, aprende e pensa. Também irmãos, vizinhos e as conversas do dia a dia.'},
+  {n:4,nome:'Casa 4 — Família e lar',desc:'Suas raízes: casa, família, infância e o lugar onde você se sente protegido.'},
+  {n:5,nome:'Casa 5 — Prazer e criação',desc:'O que te dá alegria: namoros, filhos, criatividade, hobbies e diversão.'},
+  {n:6,nome:'Casa 6 — Rotina e saúde',desc:'Seu dia a dia: trabalho prático, hábitos, cuidados com o corpo e organização.'},
+  {n:7,nome:'Casa 7 — Parcerias',desc:'Relações sérias: casamento, sociedades e como você se comporta a dois.'},
+  {n:8,nome:'Casa 8 — Transformação',desc:'Mudanças profundas, intimidade, medos e dinheiro compartilhado (heranças, dívidas, investimentos).'},
+  {n:9,nome:'Casa 9 — Horizontes',desc:'O que amplia sua vida: viagens, estudos, fé, filosofia e visão de mundo.'},
+  {n:10,nome:'Casa 10 — Carreira',desc:'Sua vida pública: profissão, reconhecimento, reputação e aonde você quer chegar.'},
+  {n:11,nome:'Casa 11 — Amigos e sonhos',desc:'Amizades, grupos, projetos coletivos e os sonhos que você quer realizar.'},
+  {n:12,nome:'Casa 12 — Mundo interno',desc:'O silêncio necessário: descanso, espiritualidade, o que fica escondido e a cura interior.'}
+];
+async function adicionarHora(){
+  const err=$('#horaErr'), btn=$('#salvarHora'), val=$('#novaHora').value.trim();
+  err.textContent='';
+  if(!/^\d{1,2}:\d{2}$/.test(val)){err.textContent='Digite a hora no formato HH:MM (ex: 14:30).';return;}
+  const [hh,mm]=val.split(':').map(Number);
+  if(hh>23||mm>59){err.textContent='Hora inválida. Use HH:MM (ex: 14:30).';return;}
+  const antigo=CHART;
+  const [Y,Mo,D]=DADOS.data.split('-').map(Number);
+  CHART=computeChart(julianDay(Y,Mo,D,(hh+mm/60)-OFFSET),DADOS.lat,DADOS.lon,true);
+  DADOS.hasTime=true; DADOS.hora=val;
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> recalculando seu mapa…';
+  try{
+    await apiPost("/api/update-birth",{birth_time:val,chart_json:chartSnapshot()},true);
+  }catch(e){
+    CHART=antigo; DADOS.hasTime=false;
+    btn.disabled=false; btn.textContent='Adicionar minha hora';
+    err.textContent='Não consegui salvar agora. Tente de novo.';
+    return;
+  }
+  renderResult();
+}
+function renderCasas(){
+  const sub=$('#casasSub'), box=$('#casasList');
+  if(!CHART) return;
+  if(!CHART.hasTime){
+    sub.textContent='';
+    box.innerHTML=`<div class="casaAviso">
+      As casas mostram <b>em que áreas da vida</b> cada energia do seu mapa age — mas elas só aparecem com a <b>hora exata de nascimento</b> (ela está na sua certidão de nascimento).
+      <div class="addHora">
+        <input id="novaHora" type="text" inputmode="numeric" placeholder="HH:MM   (ex: 14:30)" maxlength="5" />
+        <button class="btn" id="salvarHora">Adicionar minha hora</button>
+      </div>
+      <div class="err" id="horaErr"></div>
+      <div class="hint">Sua conta continua a mesma — só o mapa é recalculado com mais precisão.</div>
+    </div>`;
+    $('#novaHora').addEventListener('input',e=>{let v=e.target.value.replace(/\D/g,'').slice(0,4);if(v.length>2)v=v.slice(0,2)+':'+v.slice(2);e.target.value=v;});
+    $('#salvarHora').addEventListener('click',adicionarHora);
+    return;
+  }
+  const ascSign=signOf(CHART.asc).sign;
+  sub.textContent=`Seu Ascendente é ${ascSign}, então é por ele que sua roda começa. Cada casa é uma área da sua vida.`;
+  const b=CHART.bodies;
+  box.innerHTML='';
+  CASAS.forEach(c=>{
+    const signo=SIGNS[(CHART.ascIdx + c.n - 1) % 12];
+    const dentro=Object.keys(b).filter(k=>b[k].house===c.n).map(k=>PLANET_PT[k]);
+    const row=document.createElement('div');row.className='casaRow';
+    row.innerHTML=`
+      <div class="casaTop"><span class="casaNum">${String(c.n).padStart(2,'0')}</span>
+        <span class="casaNome">${c.nome.split('— ')[1]}</span>
+        <span class="casaSigno">em ${signo}</span></div>
+      <div class="casaDesc">${c.desc}</div>
+      ${dentro.length?`<div class="casaPlan">✦ Você tem aqui: ${dentro.join(', ')}</div>`:''}`;
+    box.appendChild(row);
+  });
 }
 function renderRituais(){
   const r=ritualsToday();
@@ -760,6 +850,7 @@ function renderResult(){
   drawWheel();
   buildMapCards();
   renderRituais();
+  renderCasas();
   generateWeekly();
   if(typeof refreshAppButtons==='function') refreshAppButtons();
   if(UNLOCKED) revelarMapas();

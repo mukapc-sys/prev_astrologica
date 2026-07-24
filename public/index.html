@@ -170,21 +170,22 @@
   .iosHelp.on{display:block}
   .pessoal{display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap;margin-top:7px;font-size:14.5px;color:var(--prata)}
   .paywall{position:relative;overflow:hidden}
-  .selo{position:absolute;top:0;right:0;background:linear-gradient(135deg,var(--ouro),var(--ouro-forte));color:#1a1330;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:0 16px 0 14px}
   .ancora{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px}
   .ancora .de{font-size:16px;color:var(--mudo)}
   .ancora s{color:var(--mudo)}
   .off{background:rgba(224,74,74,.16);border:1px solid rgba(224,74,74,.5);color:#ff8a8a;font-size:13px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.03em}
-  .semAssinatura{text-align:center;font-size:14.5px;color:var(--prata);margin-top:4px}
-  .timerBox{margin:16px auto 4px;text-align:center;background:rgba(11,10,31,.55);border:1px solid var(--linha);border-radius:14px;padding:12px}
-  .timerLabel{font-size:13.5px;color:var(--mudo);letter-spacing:.02em}
-  .timerNum{font-family:var(--mono);font-size:30px;font-weight:500;color:var(--ouro);margin-top:3px;letter-spacing:.06em}
-  .timerBox.fim .timerNum{font-size:19px;color:var(--prata)}
-  .entregaveis{list-style:none;margin-top:20px;display:grid;gap:15px}
-  .entregaveis li{display:block;padding-left:26px;position:relative}
-  .entregaveis li:before{content:"✦";position:absolute;left:0;top:1px;color:var(--ouro);font-size:15px}
-  .entregaveis li b{display:block;font-size:17px;color:var(--osso);font-weight:600;margin-bottom:3px}
-  .entregaveis li span{display:block;font-size:15.5px;color:#cfccdd;line-height:1.5}
+  .semAssinatura{text-align:center;font-size:15px;color:var(--prata);margin-top:6px}
+  .timerBox{margin:18px auto 6px;text-align:center;background:rgba(11,10,31,.55);border:1px solid var(--linha);border-radius:14px;padding:13px}
+  .timerLabel{font-size:14px;color:var(--mudo);line-height:1.4}
+  .timerNum{font-family:var(--mono);font-size:32px;font-weight:500;color:var(--ouro);margin-top:5px;letter-spacing:.06em}
+  .timerBox.fim .timerNum{font-size:18px;color:var(--prata);line-height:1.4}
+  .entregaTitulo{font-family:var(--serif);font-size:20px;color:var(--osso);text-align:center;margin:24px 0 14px;line-height:1.35}
+  .entregaveis{display:grid;gap:11px}
+  .entregaItem{background:rgba(11,10,31,.5);border:1px solid var(--linha);border-radius:14px;padding:15px}
+  .entregaHead{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+  .entregaIco{font-size:18px;flex:0 0 auto}
+  .entregaItem b{font-size:16.5px;color:var(--ouro);font-weight:600;line-height:1.25}
+  .entregaItem span{display:block;font-size:15.5px;color:#dedbe9;line-height:1.55}
   .pessoal b{color:var(--ouro);font-weight:600}
   .pessoal .sep{color:var(--linha)}
   .casas{margin-top:16px}
@@ -250,7 +251,7 @@
   <section id="screen-onboarding" class="screen on mode-signup">
     <div class="eyebrow">Previsão 100% Personalizada</div>
     <h1>Previsão<br><em>Astrológica</em> Completa</h1>
-    <p class="lede">Faça seu cadastro e receba agora mesmo o seu Mapa Natal Personalizado, feito sob medida em tempo real, com o céu de hoje. Dinheiro, Relações e Trabalho — saiba tudo que o futuro está guardando para você!</p>
+    <p class="lede">Faça seu cadastro e receba agora mesmo o seu Mapa Natal Personalizado, feito sob medida em tempo real, com o céu de hoje. Dinheiro, Relações e Trabalho. Saiba tudo que o futuro está guardando para você!</p>
 
     <div class="seg" id="seg">
       <button data-mode="signup" class="on">Criar conta</button>
@@ -298,7 +299,7 @@
       <button class="btn" id="gerar">Criar conta e revelar meu céu</button>
       <div class="err" id="formErr"></div>
     </div>
-    <div class="footnote">Cálculo astronômico real de posições planetárias, ascendente e trânsitos. Leitura de orientação e reflexão — não previsão determinística de fatos.</div>
+    <div class="footnote">Cálculo astronômico real de posições planetárias, ascendente e trânsitos. Leitura de orientação e reflexão, não previsão determinística de fatos.</div>
   </section>
 
   <!-- LOADING -->
@@ -360,28 +361,43 @@
     <div class="maps" id="maps"></div>
 
     <div class="card paywall" id="paywall">
-      <div class="selo">oferta de lançamento</div>
       <div class="eyebrow" style="justify-content:center">Sua leitura completa está pronta</div>
 
       <div class="ancora">
-        <span class="de">de <s>R$ 47,00</s></span>
-        <span class="off" id="offBadge">–58%</span>
+        <span class="de">de <s>R$ 147,00</s></span>
+        <span class="off" id="offBadge">–86%</span>
       </div>
-      <div class="price" style="margin-top:4px"><span id="precoLabel">R$ 19,90</span><small> / pagamento único</small></div>
-      <div class="semAssinatura">Sem mensalidade. Você paga uma vez e o acesso é seu.</div>
+      <div class="price" style="margin-top:4px"><span id="precoLabel">R$ 19,90</span></div>
+      <div class="semAssinatura">Sem Mensalidade, Você paga uma única vez!</div>
 
       <div class="timerBox" id="timerBox">
-        <div class="timerLabel">Este valor está reservado para você por</div>
-        <div class="timerNum" id="timerNum">15:00</div>
+        <div class="timerLabel">Seu desconto e sua Previsão Astrológica irão expirar em:</div>
+        <div class="timerNum" id="timerNum">10:00</div>
       </div>
 
-      <ul class="entregaveis">
-        <li><b>Mapa Financeiro completo</b><span>Como está o seu momento com dinheiro: onde há chance de ganho, o que exige cautela, o período mais favorável para investir ou segurar — lido a partir dos seus planetas, não de horóscopo genérico.</span></li>
-        <li><b>Mapa Relacional completo</b><span>O que os astros mostram sobre seus afetos: o que atrai e o que afasta, como está sua fase para começar, aprofundar ou encerrar um vínculo, e o ponto de atenção nos seus relacionamentos agora.</span></li>
-        <li><b>Mapa Profissional completo</b><span>A direção da sua carreira neste ciclo: onde sua vocação pede espaço, quando é hora de aparecer e arriscar, quando é hora de consolidar — e a decisão que pede mais cuidado.</span></li>
-        <li><b>Horóscopo semanal, toda semana</b><span>Uma leitura nova a cada semana, feita para o seu mapa — não para o seu signo. Chega no app com aviso quando você ativa as notificações.</span></li>
-        <li><b>Alertas dos astros</b><span>Quando um trânsito importante tocar o seu mapa, você é avisado — para não ser pego de surpresa nas fases decisivas.</span></li>
-      </ul>
+      <div class="entregaTitulo">Tudo que irá Receber com sua Previsão Astrológica:</div>
+      <div class="entregaveis">
+        <div class="entregaItem">
+          <div class="entregaHead"><span class="entregaIco">💰</span><b>Mapa Financeiro Completo</b></div>
+          <span>Como está o seu momento com dinheiro: onde existe chance de ganho, o que pede cautela e qual o período mais favorável para investir ou segurar. Tudo lido a partir dos seus planetas, não de horóscopo genérico.</span>
+        </div>
+        <div class="entregaItem">
+          <div class="entregaHead"><span class="entregaIco">❤️</span><b>Mapa Relacional Completo</b></div>
+          <span>O que os astros mostram sobre os seus afetos: o que atrai e o que afasta, como está a sua fase para começar, aprofundar ou encerrar um vínculo, e o ponto de atenção nos seus relacionamentos agora.</span>
+        </div>
+        <div class="entregaItem">
+          <div class="entregaHead"><span class="entregaIco">🚀</span><b>Mapa Profissional Completo</b></div>
+          <span>A direção da sua carreira neste ciclo: onde a sua vocação pede espaço, quando é hora de aparecer e arriscar, quando é hora de consolidar e qual decisão pede mais cuidado.</span>
+        </div>
+        <div class="entregaItem">
+          <div class="entregaHead"><span class="entregaIco">🌙</span><b>Horóscopo Semanal, Toda Semana</b></div>
+          <span>Uma leitura nova a cada semana, feita para o seu mapa e não para o seu signo. Chega direto no app, com aviso quando você ativa as notificações.</span>
+        </div>
+        <div class="entregaItem">
+          <div class="entregaHead"><span class="entregaIco">✦</span><b>Alertas dos Astros</b></div>
+          <span>Quando um trânsito importante tocar o seu mapa, você é avisado. Assim você não é pego de surpresa nas fases decisivas da sua vida.</span>
+        </div>
+      </div>
 
       <button class="btn" id="desbloquear">Desbloquear minha previsão completa</button>
       <div class="secure">🔒 pagamento via Mercado Pago · PIX · acesso liberado na hora</div>
@@ -585,21 +601,21 @@ function ritualsToday(){
 }
 /* ---- As 12 Casas (signo inteiro) ---- */
 const CASAS=[
-  {n:1,nome:'Casa 1 — Você',desc:'É a sua cara: o jeito como você chega nos lugares, sua aparência e a primeira impressão que passa.'},
-  {n:2,nome:'Casa 2 — Dinheiro e valor',desc:'Fala do seu dinheiro, do que você ganha com o próprio esforço e do quanto você se valoriza.'},
-  {n:3,nome:'Casa 3 — Comunicação',desc:'Como você fala, aprende e pensa. Também irmãos, vizinhos e as conversas do dia a dia.'},
-  {n:4,nome:'Casa 4 — Família e lar',desc:'Suas raízes: casa, família, infância e o lugar onde você se sente protegido.'},
-  {n:5,nome:'Casa 5 — Prazer e criação',desc:'O que te dá alegria: namoros, filhos, criatividade, hobbies e diversão.'},
-  {n:6,nome:'Casa 6 — Rotina e saúde',desc:'Seu dia a dia: trabalho prático, hábitos, cuidados com o corpo e organização.'},
-  {n:7,nome:'Casa 7 — Parcerias',desc:'Relações sérias: casamento, sociedades e como você se comporta a dois.'},
-  {n:8,nome:'Casa 8 — Transformação',desc:'Mudanças profundas, intimidade, medos e dinheiro compartilhado (heranças, dívidas, investimentos).'},
-  {n:9,nome:'Casa 9 — Horizontes',desc:'O que amplia sua vida: viagens, estudos, fé, filosofia e visão de mundo.'},
-  {n:10,nome:'Casa 10 — Carreira',desc:'Sua vida pública: profissão, reconhecimento, reputação e aonde você quer chegar.'},
-  {n:11,nome:'Casa 11 — Amigos e sonhos',desc:'Amizades, grupos, projetos coletivos e os sonhos que você quer realizar.'},
-  {n:12,nome:'Casa 12 — Mundo interno',desc:'O silêncio necessário: descanso, espiritualidade, o que fica escondido e a cura interior.'}
+  {n:1,nome:'Casa 1 · Você',desc:'É a sua cara: o jeito como você chega nos lugares, sua aparência e a primeira impressão que passa.'},
+  {n:2,nome:'Casa 2 · Dinheiro e valor',desc:'Fala do seu dinheiro, do que você ganha com o próprio esforço e do quanto você se valoriza.'},
+  {n:3,nome:'Casa 3 · Comunicação',desc:'Como você fala, aprende e pensa. Também irmãos, vizinhos e as conversas do dia a dia.'},
+  {n:4,nome:'Casa 4 · Família e lar',desc:'Suas raízes: casa, família, infância e o lugar onde você se sente protegido.'},
+  {n:5,nome:'Casa 5 · Prazer e criação',desc:'O que te dá alegria: namoros, filhos, criatividade, hobbies e diversão.'},
+  {n:6,nome:'Casa 6 · Rotina e saúde',desc:'Seu dia a dia: trabalho prático, hábitos, cuidados com o corpo e organização.'},
+  {n:7,nome:'Casa 7 · Parcerias',desc:'Relações sérias: casamento, sociedades e como você se comporta a dois.'},
+  {n:8,nome:'Casa 8 · Transformação',desc:'Mudanças profundas, intimidade, medos e dinheiro compartilhado (heranças, dívidas, investimentos).'},
+  {n:9,nome:'Casa 9 · Horizontes',desc:'O que amplia sua vida: viagens, estudos, fé, filosofia e visão de mundo.'},
+  {n:10,nome:'Casa 10 · Carreira',desc:'Sua vida pública: profissão, reconhecimento, reputação e aonde você quer chegar.'},
+  {n:11,nome:'Casa 11 · Amigos e sonhos',desc:'Amizades, grupos, projetos coletivos e os sonhos que você quer realizar.'},
+  {n:12,nome:'Casa 12 · Mundo interno',desc:'O silêncio necessário: descanso, espiritualidade, o que fica escondido e a cura interior.'}
 ];
 /* ---- Cronômetro da oferta (persistente por aparelho — não reinicia no refresh) ---- */
-const OFERTA_MIN=15;
+const OFERTA_MIN=10;
 let timerInt=null;
 function iniciarTimer(){
   const chave='pac_oferta_'+(LEAD_ID||'anon');
@@ -650,13 +666,13 @@ function renderCasas(){
   if(!CHART.hasTime){
     sub.textContent='';
     box.innerHTML=`<div class="casaAviso">
-      As casas mostram <b>em que áreas da vida</b> cada energia do seu mapa age — mas elas só aparecem com a <b>hora exata de nascimento</b> (ela está na sua certidão de nascimento).
+      As casas mostram <b>em que áreas da vida</b> cada energia do seu mapa age, mas elas só aparecem com a <b>hora exata de nascimento</b> (ela está na sua certidão de nascimento).
       <div class="addHora">
         <input id="novaHora" type="text" inputmode="numeric" placeholder="HH:MM   (ex: 14:30)" maxlength="5" />
         <button class="btn" id="salvarHora">Adicionar minha hora</button>
       </div>
       <div class="err" id="horaErr"></div>
-      <div class="hint">Sua conta continua a mesma — só o mapa é recalculado com mais precisão.</div>
+      <div class="hint">Sua conta continua a mesma. Só o mapa é recalculado com mais precisão.</div>
     </div>`;
     $('#novaHora').addEventListener('input',e=>{let v=e.target.value.replace(/\D/g,'').slice(0,4);if(v.length>2)v=v.slice(0,2)+':'+v.slice(2);e.target.value=v;});
     $('#salvarHora').addEventListener('click',adicionarHora);
@@ -672,7 +688,7 @@ function renderCasas(){
     const row=document.createElement('div');row.className='casaRow';
     row.innerHTML=`
       <div class="casaTop"><span class="casaNum">${String(c.n).padStart(2,'0')}</span>
-        <span class="casaNome">${c.nome.split('— ')[1]}</span>
+        <span class="casaNome">${c.nome.split('· ')[1]}</span>
         <span class="casaSigno">em ${signo}</span></div>
       <div class="casaDesc">${c.desc}</div>
       ${dentro.length?`<div class="casaPlan">✦ Você tem aqui: ${dentro.join(', ')}</div>`:''}`;
@@ -708,7 +724,7 @@ function chartSummary(){
   s+=`TRÂNSITOS DE HOJE (${new Date().toLocaleDateString('pt-BR')}) sobre o mapa:\n`;
   top.forEach(h=>s+=`- ${PLANET_PT[h.transit]} em trânsito faz ${h.name} sobre ${TG(h.target)} natal (orbe ${h.orb}°)${h.slow?' [ciclo longo]':''}\n`);
   const x=chartExtras();
-  s+=`TEMPERAMENTO: elementos — ${Object.entries(x.el).map(([k,v])=>k+' '+v).join(', ')}; modalidades — ${Object.entries(x.md).map(([k,v])=>k+' '+v).join(', ')}.\n`;
+  s+=`TEMPERAMENTO: elementos: ${Object.entries(x.el).map(([k,v])=>k+' '+v).join(', ')}; modalidades: ${Object.entries(x.md).map(([k,v])=>k+' '+v).join(', ')}.\n`;
   s+= x.retros.length ? `RETRÓGRADOS natais: ${x.retros.join(', ')}.\n` : `Sem planetas retrógrados no mapa natal.\n`;
   if(x.ruler) s+=`REGENTE DO MAPA: ${x.ruler.planet} em ${x.ruler.sign}${x.ruler.house?', casa '+x.ruler.house:''}.\n`;
   s+=`CÉU DE HOJE: ${x.phase}, Lua transitando em ${x.moonSign}.\n`;
@@ -854,7 +870,7 @@ async function fazerCadastro(){
     const out=await apiPost("/api/signup",{nome,email,telefone:whatsapp||null,senha,
       birth_date:dataISO,birth_time:hasTime?horaBR:null,has_time:hasTime,birth_city:cidadeNome,lat,lon,chart_json:chartSnapshot()});
     SESSION=out.token; LEAD_ID=out.lead_id; store.set("pac_token",SESSION);
-    msg="✓ conta criada — horóscopo semanal ativado";
+    msg="✓ conta criada, horóscopo semanal ativado";
   }catch(e){
     btn.disabled=false; btn.textContent=btnTxt;
     const m=String(e.message||'');
@@ -990,7 +1006,7 @@ function drawWheel(){
 /* ============================================================
    Leitura via IA (produção: /api/reading · preview: fallback)
    ============================================================ */
-const SYSTEM_ASTRO=`Você é uma astróloga brasileira experiente e acolhedora. Você lê o mapa da pessoa cruzando o nascimento com os astros de hoje. Escreva em português do Brasil impecável, com gramática e concordância corretas. Use linguagem SIMPLES e explicada, como quem conversa com um amigo de 45 anos que não entende de astrologia: sempre que citar um termo técnico (trânsito, casa, aspecto, retrógrado), explique em poucas palavras o que ele significa na vida real da pessoa. Nada de jargão solto. Fale de tendências e orientações para reflexão — nunca prometa fatos ou datas exatas. Sem markdown, sem listas, sem títulos. REGRA DE OURO: nunca escreva algo genérico que caberia em qualquer pessoa do mesmo signo; use os detalhes exclusivos deste mapa e cite ao menos dois deles, sempre traduzidos em linguagem do dia a dia.`;
+const SYSTEM_ASTRO=`Você é uma astróloga brasileira experiente e acolhedora. Você lê o mapa da pessoa cruzando o nascimento com os astros de hoje. Escreva em português do Brasil impecável, com gramática e concordância corretas. Use linguagem SIMPLES e explicada, como quem conversa com um amigo de 45 anos que não entende de astrologia: sempre que citar um termo técnico (trânsito, casa, aspecto, retrógrado), explique em poucas palavras o que ele significa na vida real da pessoa. Nada de jargão solto. Fale de tendências e orientações para reflexão, sem prometer fatos ou datas exatas. Sem markdown, sem listas, sem títulos. Nunca use travessão (—) no texto; prefira vírgula, ponto ou dois-pontos. REGRA DE OURO: nunca escreva algo genérico que caberia em qualquer pessoa do mesmo signo; use os detalhes exclusivos deste mapa e cite ao menos dois deles, sempre traduzidos em linguagem do dia a dia.`;
 async function askAstrologer(area,prompt){
   try{
     const out=await apiPost("/api/reading",{lead_id:LEAD_ID,area,prompt},true);
@@ -1009,7 +1025,7 @@ async function askAstrologer(area,prompt){
 async function generateWeekly(){
   const {text}=chartSummary();const el=$('#weekly');
   try{
-    const out=await askAstrologer('weekly',`${text}\n\nEscreva o horóscopo desta semana para ${DADOS.nome}, em no máximo 110 palavras, com base nos astros de hoje sobre o mapa. Linguagem simples, calorosa e fácil de entender — se usar um termo de astrologia, explique rapidinho o que significa. Português correto. Termine despertando curiosidade sobre dinheiro, amor e trabalho, sem entregar os detalhes.`);
+    const out=await askAstrologer('weekly',`${text}\n\nEscreva o horóscopo desta semana para ${DADOS.nome}, em no máximo 110 palavras, com base nos astros de hoje sobre o mapa. Linguagem simples, calorosa e fácil de entender. Se usar um termo de astrologia, explique rapidinho o que significa. Português correto. Termine despertando curiosidade sobre dinheiro, amor e trabalho, sem entregar os detalhes.`);
     el.classList.add('serif-lead');el.textContent=out||'Não consegui ler os trânsitos agora.';
   }catch(e){el.innerHTML='<span class="err">O céu está nublado para a leitura agora.</span>';}
 }
@@ -1021,9 +1037,9 @@ const AREAS=[
 function iscaFor(A,transits){
   const h=transits&&transits[0], p=h?PLANET_PT[h.transit]:'Os astros';
   const T={
-    financeira:`Há um movimento forte de ${p} mexendo com o seu dinheiro neste momento. Uma decisão financeira está se formando — e o timing certo pode mudar tudo…`,
+    financeira:`Há um movimento forte de ${p} mexendo com o seu dinheiro neste momento. Uma decisão financeira está se formando, e o momento certo pode mudar tudo…`,
     relacional:`${p} está tocando a sua vida afetiva de um jeito que você talvez já esteja sentindo. Um vínculo pede atenção, e algo começa a se abrir no amor…`,
-    profissional:`Sua carreira entra num ciclo puxado por ${p}. Existe uma virada de direção possível — e uma hora certa para agir com coragem…`
+    profissional:`Sua carreira entra num ciclo puxado por ${p}. Existe uma virada de direção possível, e uma hora certa para agir com coragem…`
   };
   return T[A.k];
 }
@@ -1057,7 +1073,7 @@ async function revelarMapas(){
   await Promise.all(AREAS.map(async A=>{
     const el=$('#prose-'+A.k); el.innerHTML='<span class="spinner"></span> escrevendo sua leitura…';
     try{
-      const out=await askAstrologer(A.k,`${text}\n\nEscreva a leitura de "${A.subt}" para ${DADOS.nome}, cobrindo ${A.foco}. Entre 170 e 210 palavras. Linguagem simples, calorosa e fácil de entender, como uma conversa — quando usar um termo astrológico, explique em poucas palavras o que ele significa na vida da pessoa. Baseie-se em 2 ou 3 posições reais do mapa cruzadas com os trânsitos de hoje. Diga o que está acontecendo agora, um ponto de atenção e um conselho prático. Português correto, sem promessas de fatos ou datas exatas.`);
+      const out=await askAstrologer(A.k,`${text}\n\nEscreva a leitura de "${A.subt}" para ${DADOS.nome}, cobrindo ${A.foco}. Entre 170 e 210 palavras. Linguagem simples, calorosa e fácil de entender, como uma conversa. Quando usar um termo astrológico, explique em poucas palavras o que ele significa na vida da pessoa. Baseie-se em 2 ou 3 posições reais do mapa cruzadas com os trânsitos de hoje. Diga o que está acontecendo agora, um ponto de atenção e um conselho prático. Português correto, sem promessas de fatos ou datas exatas.`);
       el.classList.add('serif-lead');el.textContent=out||'Leitura indisponível.';
     }catch(e){el.innerHTML='<span class="err">Não consegui completar esta leitura agora.</span>';}
   }));

@@ -168,6 +168,9 @@
   .pillbtn[hidden]{display:none}
   .iosHelp{font-size:14px;color:#e8e6f0;background:rgba(11,10,31,.55);border:1px solid var(--linha);border-radius:12px;padding:13px 15px;margin-top:8px;line-height:1.55;display:none}
   .iosHelp.on{display:block}
+  .pessoal{display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap;margin-top:7px;font-size:14.5px;color:var(--prata)}
+  .pessoal b{color:var(--ouro);font-weight:600}
+  .pessoal .sep{color:var(--linha)}
   .casas{margin-top:16px}
   .casaRow{border-bottom:1px solid rgba(255,255,255,.06);padding:13px 0}
   .casaRow:last-child{border-bottom:none}
@@ -305,6 +308,7 @@
     <div class="ident">
       <div class="eyebrow" style="justify-content:center">Seu retrato do céu</div>
       <div class="nome" id="r-nome"></div>
+      <div class="pessoal" id="r-pessoal"></div>
       <div class="bigthree" id="bigthree"></div>
     </div>
 
@@ -835,9 +839,24 @@ function runLoading(){
   setTimeout(()=>{renderResult();},2400);
 }
 
+function idadeDe(iso){
+  if(!iso) return null;
+  const [Y,M,D]=iso.split('-').map(Number);
+  const hoje=new Date();
+  let a=hoje.getFullYear()-Y;
+  const m=(hoje.getMonth()+1)-M;
+  if(m<0||(m===0&&hoje.getDate()<D)) a--;
+  return (a>=0&&a<130)?a:null;
+}
 function renderResult(){
   show('#screen-result');
   $('#r-nome').textContent=DADOS.nome;
+  const idade=idadeDe(DADOS.data), signo=signOf(CHART.bodies.Sol.lon).sign;
+  const partes=[];
+  if(idade!=null) partes.push(`<span><b>${idade}</b> anos</span>`);
+  partes.push(`<span>signo de <b>${signo}</b></span>`);
+  if(DADOS.cidade) partes.push(`<span>nasceu em <b>${DADOS.cidade}</b></span>`);
+  $('#r-pessoal').innerHTML=partes.join('<span class="sep">·</span>');
   const ss=$('#saveState'); ss.textContent=window.__saveMsg||""; ss.classList.toggle('ok',/✓/.test(window.__saveMsg||""));
   const bt=$('#bigthree');bt.innerHTML='';
   const three=[["Sol",CHART.bodies.Sol],["Lua",CHART.bodies.Lua]];
